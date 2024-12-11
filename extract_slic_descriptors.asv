@@ -28,6 +28,9 @@ function out = extract_slic_descriptors(im, num_superpixels)
     %sim = hsvim(:,:,2);
     gim = hsvim(:,:,3);
 
+    labim = rgb2lab(im);
+    lim = labim(:,:,1);
+
     %[sobel,~] = mysobel(gim, 1);
     [spot,ripple,edge_ripple,edge_spot,edge_wave] = leaf_law(gim);
 
@@ -50,6 +53,8 @@ function out = extract_slic_descriptors(im, num_superpixels)
         descriptors(k,6) = sum(sum( edge_ripple(ry,rx) .* cmask ));
         descriptors(k,7) = sum(sum( edge_spot(ry,rx) .* cmask ));
         descriptors(k,8) = sum(sum( edge_wave(ry,rx) .* cmask )) / npixels;
+
+        descriptors(k,9) = sum(sum()
     end
 
     descriptors(:,4:8) = normalize(descriptors(:,4:8), 'norm');
