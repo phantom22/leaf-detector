@@ -1,7 +1,8 @@
 function main
-    im = imread('B1.jpg');
-    
-    desc = extract_slic_descriptors(im, 300);
-    
-    slic_kmeans(im, desc, 2, true);
+    im = imread('A1.jpg');
+    t = rgb2(im);
+    imshow(t);
+
+    %desc = extract_slic_descriptors(im, 300);
+    %slic_kmeans(im, desc, 4, true);
 end
