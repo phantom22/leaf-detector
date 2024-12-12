@@ -1,5 +1,5 @@
 function out = extract_slic_descriptors(im, num_superpixels)
-    tic;
+    %tic;
     if ~isa(im,'single')
         im = im2single(im);
     end
@@ -59,5 +59,5 @@ function out = extract_slic_descriptors(im, num_superpixels)
     out.superpixels = SP;
     out.num_superpixels = N_SP;
     out.original_size = size(im);
-    toc;
+    %toc;
 end
