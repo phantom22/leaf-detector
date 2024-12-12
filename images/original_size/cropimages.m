@@ -1,75 +1,37 @@
-% function cropimages(from,to)
-%     arguments
-%         from = mfilename('fullpath');
-%         to = '..\reduced_size';
-%     end
-% 
-%     disp(strcmp(from,mfilename('fullpath')));
-%     disp(to);
-%     return;
-% 
-%     if ~strcmp(from,mfilename('fullpath'))
-% 
-%     end
-% 
-%     prev_pwd = pwd;
-% 
-%     script_full_path = from;
-%     script_dir = fileparts(script_full_path);
-%     target_dir = dir(fullfile(script_dir, to)).folder;
-% 
-%     cd(script_dir);
-% 
-%     files = dir(fullfile('*.jpg'));
-% 
-%     input_res = [4000 3000];
-%     reduced_res = input_res / 10;
-% 
-%     for k = 1:length(files)
-%         fname = files(k).name;
-%         imwrite(imresize(imread(fname), reduced_res), fullfile(target_dir, fname));
-%     end
-% 
-%     cd(prev_pwd);
-% end
-
-function cropimages(from, to)
+function cropimages(from, to, target_width, target_height)
     arguments
-        from = '.';
-        to = '..\reduced_size';
-    end
-
-    prev_pwd = pwd;
-    %to="\pianta3t";
-    %from="\pianta3";
-    
-    script_full_path = mfilename('fullpath');
-    script_dir = fileparts(script_full_path);
-
-
-    mkdir(fullfile(script_dir, to));
-    target_dir = dir(fullfile(script_dir, to)).folder;
-    cd(fullfile(script_dir,from));
-    files = dir(fullfile('*.jpg'));
-    
-    
-    %input_res = [4000 3000];
-    %reduced_res = input_res / 10;
-    
-    for k = 1:length(files)
-        fname = files(k).name;
-        im=imread(fname);
-        [m,n,~]=size(im);
-        centern=ceil(n/2)+250;
-        centerm=ceil(m/2)+70;
-        dimensionem=1020;
-        dimensionen=1360;
-        dm=ceil(dimensionem/2);
-        dn=ceil(dimensionen/2);
-        pezzo=im(centerm-dm:centerm+dm,centern-dn:centern+dn,1:3);
-        % figure;imshow(pezzo);
-        imwrite(imresize(pezzo,[300,400]), fullfile(target_dir, strcat(int2str(k),'.jpg')));
+        from;
+        to;
+        target_width = 400;
+        target_height = 300;
     end
     
-    cd(prev_pwd);
+    if ~exist(from, 'dir')
+        error('non existent directory passed as input folder.');
+    elseif strcmp(from,to)
+        error('the otput folder cannot be equal to the input folder.');
+    end
+    
+    images = dir(fullfile(from, '*.jpg'));
+    images = images(~[images.isdir]);
+    num_images = length(images);
+    
+    if ~exist(to, 'dir')
+        mkdir(to);
+    else
+        disp('the output folder already exists!');
+        user_input = input('Override folder? (Y/N): ', 's');
+        if ~ismember(user_input, {'Y', 'y'})
+            disp('operation aborted.');
+            return;
+        end
+    end
+    
+    target_dir = dir(fullfile(to)).folder;
+
+    for k=1:num_images
+        fname = images(k).name;
+        imwrite(imresize((fullfile(from,fname)),[target_height,target_width]), fullfile(target_dir, strcat(int2str(k),'.jpg')));
+        fprintf("%d/%d '%s' done.\n", k, num_images, fname);
+    end
 end
