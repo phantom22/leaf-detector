@@ -1,9 +1,8 @@
-function [data,num_images,max_num_superpixels] = slic_batch(num_superpixels,compactness,input_dir,label)
+function [data,num_images,max_num_superpixels] = slic_batch(num_superpixels,compactness,input_dir)
     arguments
         num_superpixels = 450;
         compactness = 10;
         input_dir = 'images/C';
-        label = 0;
     end
     close all;
 
@@ -23,14 +22,11 @@ function [data,num_images,max_num_superpixels] = slic_batch(num_superpixels,comp
         end
 
         d = desc.descriptors;
-        d(:,5) = label;
 
-        descriptors{k} = d; % num_superpixels x 5
+        descriptors{k} = d; % num_superpixels x 4
     end
 
-    disp(size(descriptors{1})); 
-
-    data = zeros(5, max_num_superpixels, num_images, 'single');
+    data = zeros(4, max_num_superpixels, num_images, 'single');
     for k=1:num_images
         d = descriptors{1};
         num_superpixels = size(d,1);
