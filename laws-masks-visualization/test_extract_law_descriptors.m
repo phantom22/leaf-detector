@@ -1,4 +1,4 @@
-function out = test_extract_law_descriptors(im, num_superpixels)
+function [out,LL,LE,LS,LR,LW,EL,EE,ES,ER,EW,SL,SE,SS,SR,SW,RL,RE,RS,RR,RW,WL,WE,WS,WR,WW] = test_extract_law_descriptors(im, num_superpixels)
     %tic;
     if ~isa(im,'single')
         im = im2single(im);
@@ -27,9 +27,52 @@ function out = test_extract_law_descriptors(im, num_superpixels)
     hsvim = rgb2hsv(im);
     %sim = hsvim(:,:,2);
     gim = hsvim(:,:,3);
+    
+    lab = rgb2lab(im);
+    lim = hsvim(:,:,1);
 
     %[sobel,~] = mysobel(gim, 1);
     [LL,LE,LS,LR,LW,EL,EE,ES,ER,EW,SL,SE,SS,SR,SW,RL,RE,RS,RR,RW,WL,WE,WS,WR,WW] = test_law(gim);
+
+    LE(1:2,:) = 0;
+    LE(:,1:2) = 0;
+    LE(end-1:end,:) = 0;
+    LE(:,end-1:end) = 0;
+
+    LS(1:2,:) = 0;
+    LS(:,1:2) = 0;
+    LS(end-1:end,:) = 0;
+    LS(:,end-1:end) = 0;
+
+    LR(1:2,:) = 0;
+    LR(:,1:2) = 0;
+    LR(end-1:end,:) = 0;
+    LR(:,end-1:end) = 0;
+
+    LW(1:2,:) = 0;
+    LW(:,1:2) = 0;
+    LW(end-1:end,:) = 0;
+    LW(:,end-1:end) = 0;
+
+    EL(1:2,:) = 0;
+    EL(:,1:2) = 0;
+    EL(end-1:end,:) = 0;
+    EL(:,end-1:end) = 0;
+
+    SL(1:2,:) = 0;
+    SL(:,1:2) = 0;
+    SL(end-1:end,:) = 0;
+    SL(:,end-1:end) = 0;
+
+    RL(1:2,:) = 0;
+    RL(:,1:2) = 0;
+    RL(end-1:end,:) = 0;
+    RL(:,end-1:end) = 0;
+
+    WL(1:2,:) = 0;
+    WL(:,1:2) = 0;
+    WL(end-1:end,:) = 0;
+    WL(:,end-1:end) = 0;
 
     descriptors = zeros(N_SP, 28, 'single');
 
@@ -70,9 +113,11 @@ function out = test_extract_law_descriptors(im, num_superpixels)
         descriptors(k,26) = sum(sum( WS(ry,rx) .* cmask ));
         descriptors(k,27) = sum(sum( WR(ry,rx) .* cmask ));
         descriptors(k,28) = sum(sum( WW(ry,rx) .* cmask ));
+
+        descriptors(k,29) = sum(sum( lim(ry,rx) .* cmask )) / npixels;
     end
 
-    %descriptors(:,5:28) = normalize(descriptors(:,5:28), 'norm');
+    descriptors(:,4:29) = normalize(descriptors(:,4:29), 'zscore');
 
     out.descriptors = descriptors;
     out.superpixels = SP;

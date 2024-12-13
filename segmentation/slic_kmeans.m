@@ -17,7 +17,7 @@ function K = slic_kmeans(im, desc, num_clusters, display, draw_slic)
     else
         ax1 = subplot(1,3,1); imshow(im); title(sprintf("%dx%dx%d", desc.original_size));
         ax2 = subplot(1,3,2); imagesc(K); colormap(jet); axis image; title(sprintf("nsp=%d k=%d", desc.num_superpixels, num_clusters));
-        ax3 = subplot(1,3,3); imshow(imoverlay(im, boundarymask(SP), 'cyan')); colormap(jet); title(sprintf("nsp=%d k=%d", desc.num_superpixels, num_clusters));
+        ax3 = subplot(1,3,3); imshow(imoverlay(im, boundarymask(SP), 'cyan')); colormap(jet); title("overlay");
         linkaxes([ax1, ax2, ax3], 'xy');
     end
     axis tight;

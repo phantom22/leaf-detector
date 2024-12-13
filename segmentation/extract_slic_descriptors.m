@@ -1,4 +1,4 @@
-function out = extract_slic_descriptors(im, num_superpixels)
+function out = extract_slic_descriptors(im, num_superpixels, compactness)
     %tic;
     if ~isa(im,'single')
         im = im2single(im);
@@ -12,7 +12,7 @@ function out = extract_slic_descriptors(im, num_superpixels)
 
     [SP,N_SP] = superpixels(im, num_superpixels, ...
                      'Method', 'slic', ...
-                     'Compactness', 18);
+                     'Compactness', compactness);
 
     rprops = regionprops(SP, 'BoundingBox');
 
@@ -28,10 +28,13 @@ function out = extract_slic_descriptors(im, num_superpixels)
     %sim = hsvim(:,:,2);
     gim = hsvim(:,:,3);
 
+    ycbcrim = rgb2ycbcr(im);
+    cbim = ycbcrim(:,:,2);
+
     %[sobel,~] = mysobel(gim, 1);
     L = leaf_law(gim);
 
-    descriptors = zeros(N_SP, 6, 'single');
+    descriptors = zeros(N_SP, 4, 'single');
 
     for k = 1:N_SP
         ry = iY{k};
@@ -40,15 +43,17 @@ function out = extract_slic_descriptors(im, num_superpixels)
         npixels = nnz(cmask);
 
         descriptors(k,1:3) = sum(sum( im(ry,rx) .* cmask )) / npixels;
-        descriptors(k,4) = sum(sum( L(ry,rx) .* cmask ));
+        %descriptors(k,4) = sum(sum( L(ry,rx) .* cmask ));
+        descriptors(k,4) = sum(sum( cbim(ry,rx) .* cmask )) / npixels;
 
+        %descriptors(k,5) = sum(sum( sim(ry,rx) .* cmask )) / npixels;
         %descriptors(k,9) = sum(sum( sobel(ry,rx) .* cmask )) / npixels;
         %descriptors(k,4) = sum(sum( sim(ry,rx) .* cmask )) / npixels;
         %descriptors(k,5) = sum(sum( sobel(ry,rx) .* cmask )) / npixels;
         %descriptors(k,6) = sum(sum( sobel_dir(ry,rx) .* cmask )) / npixels;
     end
 
-    descriptors(:,4) = normalize(descriptors(:,4), 'norm');
+    %descriptors(:,4) = normalize(descriptors(:,4), 'norm');
 
     out.descriptors = descriptors;
     out.superpixels = SP;
