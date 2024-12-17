@@ -36,8 +36,6 @@ void mexFunction(int num_args_lhs, mxArray *pts_lhs[], int num_rhs, const mxArra
 		    usageError("MATLAB:normbins:firstInputNot2DArray");
         m = pDims[0];
         n = pDims[1];
-        if (m <= 1 || n <= 1)
-		    usageError("MATLAB:normbins:firstInputNotMatrix");
         if (num_rhs >= 2) {
             if (!mxIsDouble(NUM_BINS) || !mxIsScalar(NUM_BINS)) 
                 usageError("MATLAB:normbins:secondInputNotDouble");

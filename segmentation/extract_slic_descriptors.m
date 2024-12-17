@@ -1,5 +1,5 @@
 function out = extract_slic_descriptors(im, num_superpixels, compactness)
-    %tic;
+    tic;
     if ~isa(im,'single')
         im = im2single(im);
     end
@@ -31,23 +31,26 @@ function out = extract_slic_descriptors(im, num_superpixels, compactness)
     ycbcrim = rgb2ycbcr(im);
     cbim = ycbcrim(:,:,2);
 
-    %[sobel,~] = mysobel(gim, 1);
-    L = leaf_law(gim);
+    labim = rgb2lab(im);
+    aim = labim(:,:,2);
 
-    descriptors = zeros(N_SP, 5, 'single');
+    %[sobel,~] = mysobel(gim, 1);
+    %L = leaf_law(gim);
+
+    descriptors = zeros(N_SP, 6, 'single');
 
     for k = 1:N_SP
         ry = iY{k};
         rx = iX{k};
         cmask = SP(ry, rx) == k; % cropped mask
         mass = nnz(cmask);
-        bins = normbins(gim(ry,rx), 8, cmask);
+        bins = normbins(gim(ry,rx), 16, cmask);
         [~,~,~,~,~,~,~,entr] = binfeatures(bins);
 
         descriptors(k,1:3) = sum(sum( im(ry,rx) .* cmask )) / mass;
-        %descriptors(k,4) = sum(sum( L(ry,rx) .* cmask ));
         descriptors(k,4) = sum(sum( cbim(ry,rx) .* cmask )) / mass;
-        descriptors(k,5) = entr;
+        descriptors(k,5) = sum(sum( aim(ry,rx) .* cmask )) / mass;
+        descriptors(k,6) = entr;
         %descriptors(k,6) = sum(sum( glcm ));
 
         %descriptors(k,5) = sum(sum( sim(ry,rx) .* cmask )) / npixels;
@@ -58,11 +61,11 @@ function out = extract_slic_descriptors(im, num_superpixels, compactness)
     end
 
     %descriptors(:,4) = normalize(descriptors(:,4), 'norm');
-    descriptors(:,1:5) = normalize(descriptors(:,1:5),'norm');
+    descriptors(:,1:6) = normalize(descriptors(:,1:6),'norm');
 
     out.descriptors = descriptors;
     out.superpixels = SP;
     out.num_superpixels = N_SP;
     out.original_size = size(im);
-    %toc;
+    toc;
 end

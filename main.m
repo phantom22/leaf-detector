@@ -1,10 +1,10 @@
 function main
-    im = imread('images/M/17.jpg');
+    im = imread('images/A/7.jpg');
 
-    desc = extract_slic_descriptors(im, 600, 18);
-    slic_kmeans(im, desc, 2, true, true);
+    desc = extract_slic_descriptors(im, 1500, 20);
+    slic_kmeans(im, desc, 2, true, false);
 
-    disp(size(desc.descriptors))
+    %disp(size(desc.descriptors))
 
     %in_row = reshape(desc.descriptors, [], 1);
     
