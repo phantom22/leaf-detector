@@ -2,7 +2,7 @@ function outs = slic_kmeans_batch(num_superpixels,compactness,input_dir)
     arguments
         num_superpixels = 450;
         compactness = 10;
-        input_dir = 'images/C';
+        input_dir = 'images/B';
     end
     close all;
 

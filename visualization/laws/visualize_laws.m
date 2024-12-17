@@ -16,7 +16,7 @@ function visualize_laws
     SP = desc.superpixels;
 
     descriptor_labels = {
-        'R channel';'G channel';'B channel';
+        'Statistic mean';'Statistic std';'B channel';
         'LL';'LE';'LS';'LR';'LW';
         'EL';'EE';'ES';'ER';'EW';
         'SL';'SE';'SS';'SR';'SW';
@@ -112,30 +112,35 @@ function visualize_laws
         imagesc(masks{i1});
         axis image;
         axis off;
+        colorbar;
         title(descriptor_labels{i1+3});
 
         subplot(3,2,2);
         imagesc(masks{i2});
         axis image;
         axis off;
+        colorbar;
         title(descriptor_labels{i2+3});
 
         subplot(3,1,2);
         imagesc(masks{i3});
         axis image;
         axis off;
+        colorbar;
         title(descriptor_labels{i3+3});
 
         subplot(3,2,5);
         imagesc(masks{i4});
         axis image;
         axis off;
+        colorbar;
         title(descriptor_labels{i4+3});
 
         subplot(3,2,6);
         imagesc(masks{i5});
         axis image;
         axis off;
+        colorbar;
         title(descriptor_labels{i5+3});
     end
 end

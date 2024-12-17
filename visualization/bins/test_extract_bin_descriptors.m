@@ -1,4 +1,4 @@
-function out = extract_slic_descriptors(im, num_superpixels, compactness)
+function out = test_extract_bin_descriptors(im, num_superpixels)
     %tic;
     if ~isa(im,'single')
         im = im2single(im);
@@ -12,7 +12,7 @@ function out = extract_slic_descriptors(im, num_superpixels, compactness)
 
     [SP,N_SP] = superpixels(im, num_superpixels, ...
                      'Method', 'slic', ...
-                     'Compactness', compactness);
+                     'Compactness', 18);
 
     rprops = regionprops(SP, 'BoundingBox');
 
@@ -28,37 +28,28 @@ function out = extract_slic_descriptors(im, num_superpixels, compactness)
     %sim = hsvim(:,:,2);
     gim = hsvim(:,:,3);
 
-    ycbcrim = rgb2ycbcr(im);
-    cbim = ycbcrim(:,:,2);
-
-    %[sobel,~] = mysobel(gim, 1);
-    L = leaf_law(gim);
-
-    descriptors = zeros(N_SP, 5, 'single');
+    descriptors = zeros(N_SP, 12, 'single');
 
     for k = 1:N_SP
         ry = iY{k};
         rx = iX{k};
         cmask = SP(ry, rx) == k; % cropped mask
-        mass = nnz(cmask);
-        bins = normbins(gim(ry,rx), 8, cmask);
-        [~,~,~,~,~,~,~,entr] = binfeatures(bins);
+        npixels = nnz(cmask);
 
-        descriptors(k,1:3) = sum(sum( im(ry,rx) .* cmask )) / mass;
-        %descriptors(k,4) = sum(sum( L(ry,rx) .* cmask ));
-        descriptors(k,4) = sum(sum( cbim(ry,rx) .* cmask )) / mass;
-        descriptors(k,5) = entr;
-        %descriptors(k,6) = sum(sum( glcm ));
+        [wmean,sstd,first,second,third,rel,unif,entr] = binfeatures(normbins(gim(ry,rx), 32, cmask));
 
-        %descriptors(k,5) = sum(sum( sim(ry,rx) .* cmask )) / npixels;
-        %descriptors(k,9) = sum(sum( sobel(ry,rx) .* cmask )) / npixels;
-        %descriptors(k,4) = sum(sum( sim(ry,rx) .* cmask )) / npixels;
-        %descriptors(k,5) = sum(sum( sobel(ry,rx) .* cmask )) / npixels;
-        %descriptors(k,6) = sum(sum( sobel_dir(ry,rx) .* cmask )) / npixels;
+        descriptors(k,1:3) = sum(sum( im(ry,rx) .* cmask )) / npixels;
+        descriptors(k,4) = wmean;
+        descriptors(k,5) = sstd;
+        descriptors(k,6) = first;
+        descriptors(k,7) = second;
+        descriptors(k,8) = third;
+        descriptors(k,9) = rel;
+        descriptors(k,10) = unif;
+        descriptors(k,11) = entr;
     end
 
-    %descriptors(:,4) = normalize(descriptors(:,4), 'norm');
-    descriptors(:,1:5) = normalize(descriptors(:,1:5),'norm');
+    descriptors(:,1:11) = normalize(descriptors(:,1:11), 'center');
 
     out.descriptors = descriptors;
     out.superpixels = SP;

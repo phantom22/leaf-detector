@@ -1,13 +1,21 @@
-%function main(target)
-    im = imread('images/A/5.jpg');
+function main
+    im = imread('images/M/17.jpg');
 
-    desc = extract_slic_descriptors(im, 350, 18);
+    desc = extract_slic_descriptors(im, 600, 18);
+    slic_kmeans(im, desc, 2, true, true);
 
-    in_row = reshape(desc.descriptors, [], 1);
+    disp(size(desc.descriptors))
+
+    %in_row = reshape(desc.descriptors, [], 1);
     
-    l = length(in_row);
+    %actual_length = length(in_row);
 
-    in_row = padarray(in_row, 1784-l, 'post');
+    %expected_length = length(leaf_classificator.ClassificationTree.PredictorNames);
 
-    [yfit,scores] = leaf_classificator.predictFcn(in_row);
-%end
+    %in_row = padarray(in_row, expected_length-actual_length, 'post');
+
+    %labels = {'A','B','C','D','E'};
+    %[yfit,~] = leaf_classificator.predictFcn(in_row);
+
+    %display(labels{yfit});
+end

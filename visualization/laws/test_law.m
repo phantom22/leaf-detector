@@ -5,9 +5,9 @@ function [LL,LE,LS,LR,LW,EL,EE,ES,ER,EW,SL,SE,SS,SR,SW,RL,RE,RS,RR,RW,WL,WE,WS,W
     R5 = [1 -4 6 -4 1];
     W5 = [-1 2 0 -2 1];
 
-    im = padarray(im,[3,3],'circular','both');
+    im = padarray(im,[2 2],'symmetric');
 
-    c2 = @(A,B) conv2(A,B,im,'same').^2;
+    c2 = @(A,B) conv2(A,B,im,'valid').^2;
 
     %LE,LR,ES,SS,RR,LS,EE,ER,SR
 
