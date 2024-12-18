@@ -14,6 +14,7 @@
 void computeMaskBins(mxDouble *OUTPTR, int *out_counter, mxSingle *IMPTR, mxLogical *MASKPTR, mwSize m, mwSize n, int nl);
 void computeBins(mxDouble *OUTPTR, int *out_counter, mxSingle *IMPTR, mwSize m, mwSize n, int nl);
 void usageError(const char *id);
+void invalidEntriesError();
 
 void mexFunction(int num_args_lhs, mxArray *pts_lhs[], int num_rhs, const mxArray *pts_rhs[]) {
     if (num_args_lhs > 1)
@@ -81,27 +82,32 @@ void mexFunction(int num_args_lhs, mxArray *pts_lhs[], int num_rhs, const mxArra
 }
 
 void computeMaskBins(mxDouble *OUTPTR, int *out_counter, mxSingle *IMPTR, mxLogical *MASKPTR, mwSize m, mwSize n, int nl) {
-    int counter  = 0;
+    int counter  = 0, L = n*m;
 
-    for (int x=0; x<n-1; x++) {
-        for (int y=0; y<m; y++) {
-            if (!MASKPTR[y+x*m])
-                continue;
-            OUTPTR[(int) floor(IMPTR[y+x*m] * nl)]++;
-            counter++;
-        }
+    for (int i=0; i<L; i++) {
+        if (!MASKPTR[i])
+            continue;
+
+        mxSingle v = IMPTR[i];
+        if (v < 0.0 || v > 1.0)
+            invalidEntriesError();
+
+        OUTPTR[v == 1.0 ? nl - 1 : (int) floor(v * nl)]++;
+        counter++;
     }
-
     *out_counter = counter;
 }
 
 void computeBins(mxDouble *OUTPTR, int *out_counter, mxSingle *IMPTR, mwSize m, mwSize n, int nl) {
-    int counter = 0;
-    for(int x=0; x<n-1; x++) {
-        for(int y=0; y<m; y++) {
-            OUTPTR[(int) floor(IMPTR[y+x*m] * nl)]++;
-            counter++;
-        }
+    int counter = 0, L = n*m;
+    
+    for (int i=0; i<L; i++) {
+        mxSingle v = IMPTR[i];
+        if (v < 0.0 || v > 1.0)
+            invalidEntriesError();
+
+        OUTPTR[v == 1.0 ? nl - 1 : (int) floor(v * nl)]++;
+        counter++;
     }
     *out_counter = counter;
 }
@@ -109,7 +115,12 @@ void computeBins(mxDouble *OUTPTR, int *out_counter, mxSingle *IMPTR, mwSize m, 
 void usageError(const char *id) {
     mexErrMsgIdAndTxt(id,
 	    "Correct usage: normbins(im, num_bins, mask)\n"
-        "    im: grayscale image of type single.\n"
+        "    im: grayscale image of type single, all entries must have values in the range [0,1].\n"
         "    (optional) num_bins: specifies the dimension of the output array, must be >= 2.\n"
         "    (optional) mask: it specifies the pixels to consider, must match the dimensions of im and of logical type.");
+}
+
+void invalidEntriesError() {
+    mexErrMsgIdAndTxt("MATLAB:normglcm:firstInputHasInvalidEntries", 
+        "The input im has an entry at with a value outside the expected range of [0,1].");
 }

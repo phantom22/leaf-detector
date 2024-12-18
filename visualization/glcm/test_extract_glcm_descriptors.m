@@ -28,7 +28,7 @@ function out = test_extract_glcm_descriptors(im, num_superpixels)
     %sim = hsvim(:,:,2);
     gim = hsvim(:,:,3);
 
-    descriptors = zeros(N_SP, 67, 'single'); % rgb + 16x16 glcm
+    descriptors = zeros(N_SP, 15, 'single'); % rgb + 16x16 glcm
 
     for k = 1:N_SP
         ry = iY{k};
@@ -36,13 +36,24 @@ function out = test_extract_glcm_descriptors(im, num_superpixels)
         cmask = SP(ry, rx) == k; % cropped mask
         npixels = nnz(cmask);
 
-        glcm = normglcm(gim(ry,rx), 8, cmask);
+        [e_x, e_y, var_x, var_y, std_x, std_y, max_prob, corr, contrast, uniformity, homogeneity, entr] = glcmfeatures(normglcm(gim(ry,rx), 8, cmask));
 
         descriptors(k,1:3) = sum(sum( im(ry,rx) .* cmask )) / npixels;
-        descriptors(k,4:67) = glcm(:);
+        descriptors(k,4) = e_x;
+        descriptors(k,5) = e_y;
+        descriptors(k,6) = var_x;
+        descriptors(k,7) = var_y;
+        descriptors(k,8) = std_x;
+        descriptors(k,9) = std_y;
+        descriptors(k,10) = max_prob;
+        descriptors(k,11) = corr;
+        descriptors(k,12) = contrast;
+        descriptors(k,13) = uniformity;
+        descriptors(k,14) = homogeneity;
+        descriptors(k,15) = entr;
     end
 
-    descriptors(:,1:3) = normalize(descriptors(:,1:3), 'norm');
+    descriptors(:,1:15) = normalize(descriptors(:,1:15), 'norm');
 
     out.descriptors = descriptors;
     out.superpixels = SP;

@@ -6,10 +6,10 @@
 #define BINS        pts_rhs[0]
 
 /* Output Arguments */
-#define OUT_WEIGHTEDMEAN  pts_lhs[0]
-#define OUT_STATSTD       pts_lhs[1]
-#define OUT_FIRST         pts_lhs[2]
-#define OUT_SECOND        pts_lhs[3]
+#define OUT_EXPECTED      pts_lhs[0]
+#define OUT_VARIANCE      pts_lhs[1]
+#define OUT_STD           pts_lhs[2]
+#define OUT_FIRST         pts_lhs[3]
 #define OUT_THIRD         pts_lhs[4]
 #define OUT_RELATIVE      pts_lhs[5]
 #define OUT_UNIFORMITY    pts_lhs[6]
@@ -21,7 +21,7 @@ void usageError(const char *id);
 void mexFunction(int num_args_lhs, mxArray *pts_lhs[], int num_rhs, const mxArray *pts_rhs[]) {
     if (num_args_lhs > 8)
         mexErrMsgIdAndTxt("MATLAB:binfeatures:invalidNumOutputs",
-            "Invalid number of output arguments.\n  out_args: [weighted_mean, standard_deviation, first_moment, second_moment, third_moment, relative_variance, uniformity, entropy].");
+            "Invalid number of output arguments.\n  out_args: [expected_value, variance, standard_deviation, first_moment, third_moment, relative_variance, uniformity, entropy].");
 
     size_t nDimNum;
     const mwSize *pDims;
@@ -35,49 +35,46 @@ void mexFunction(int num_args_lhs, mxArray *pts_lhs[], int num_rhs, const mxArra
         if (nDimNum != 2)
             usageError("MATLAB:binfeatures:inputNotArray");
         
-        mwSize n = pDims[0], weighted_mean = pDims[1];
-        if (weighted_mean != 1 && n != 1)
+        mwSize n = pDims[0], m = pDims[1];
+        if (m != 1 && n != 1)
             usageError("MATLAB:binfeatures:inputNotMatrix");
-        N = (weighted_mean > n) ? weighted_mean : n;
+        N = (m > n) ? m : n;
     }
     else
         usageError("MATLAB:binfeatures:invalidNumInputs");
 
-    // Pointer to the BINS matrix (array)
+    // Pointer to the GLCM matrix (array)
     mxDouble *BINSPTR = (mxDouble *) mxGetData(BINS);
 
     // sum = 1.0 because the bins are assumed to be a distribution function.
-    mxDouble uniformity = 0.0, weighted_mean = 0;
+    mxDouble uniformity = 0.0, expected_value = 0;
     for (int zi=0; zi<N; zi++) {
-        mxDouble p = BINSPTR[zi];
-        uniformity += p * p;
-        weighted_mean += zi * p;
+        mxDouble p_zi = BINSPTR[zi];
+        uniformity += p_zi * p_zi;
+        expected_value += zi * p_zi;
     }
 
-    mxDouble statistical_mean = 1.0 / N,
-             statistical_var = (uniformity - statistical_mean) / (N-1),
-             statistical_std = sqrt(statistical_var),
-             log2 = 1 / log(2.0);
-
-    mxDouble first = 0, second = 0, third = 0, entropy = 0;
+    mxDouble first = 0, second = 0, third = 0, 
+             entropy = 0, inv_log2 = 1 / log(2.0);
     for (int zi=0; zi<N; zi++) {
-        mxDouble p = BINSPTR[zi],
-                 diff = zi - weighted_mean;
+        mxDouble p_zi = BINSPTR[zi],
+                 diff = zi - expected_value;
         
-        first += diff * p;
-        second += pow(diff,2) * p;
-        third += pow(diff,3) * p;
-        if (p > 0)
-            entropy -= p* log(p) * log2; 
+        first += diff * p_zi;
+        second += pow(diff,2) * p_zi;
+        third += pow(diff,3) * p_zi;
+        if (p_zi > 0) // this prevents NaN's from log(non_positive_value)
+            entropy -= p_zi * log(p_zi) * inv_log2; 
     }
 
-    mxDouble relative = 1 - 1 / (1 + statistical_var);
+    mxDouble statistical_std = sqrt(second),
+             relative = 1 - 1 / (1 + second);
 
     // Create the output matrices
-    OUT_WEIGHTEDMEAN = mxCreateDoubleScalar(weighted_mean);
-    OUT_STATSTD = mxCreateDoubleScalar(statistical_std);
+    OUT_EXPECTED = mxCreateDoubleScalar(expected_value);
+    OUT_VARIANCE = mxCreateDoubleScalar(second);
+    OUT_STD = mxCreateDoubleScalar(statistical_std);
     OUT_FIRST = mxCreateDoubleScalar(first);
-    OUT_SECOND = mxCreateDoubleScalar(second);
     OUT_THIRD = mxCreateDoubleScalar(third);
     OUT_RELATIVE = mxCreateDoubleScalar(relative);
     OUT_UNIFORMITY = mxCreateDoubleScalar(uniformity);

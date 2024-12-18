@@ -16,7 +16,7 @@ function visualize_laws
     SP = desc.superpixels;
 
     descriptor_labels = {
-        'Statistic mean';'Statistic std';'B channel';
+        'R channel';'G channel';'B channel';
         'LL';'LE';'LS';'LR';'LW';
         'EL';'EE';'ES';'ER';'EW';
         'SL';'SE';'SS';'SR';'SW';

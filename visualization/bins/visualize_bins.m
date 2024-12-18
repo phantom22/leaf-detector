@@ -1,7 +1,7 @@
 function visualize_bins
     close all;
 
-    im = imread('images/B/1.jpg');
+    im = imread('images/N/17.jpg');
     %t = medfilt3(im,[5 5 1]);
 
     %noshadowim = im ./ imgaussfilt(rgb2gray(im),gaussiansigma(50),"Padding","symmetric");
@@ -10,14 +10,14 @@ function visualize_bins
     %noshadowim = medfilt3((noshadowim - ns_min)  / (ns_max - ns_min), [9 9 1], "symmetric");
     %t = imgaussfilt3(noshadowim, gaussiansigma(3));
 
-    desc = test_extract_bin_descriptors(im, 300);
+    desc = test_extract_bin_descriptors(im, 4000);
     descriptors = desc.descriptors;
     SP = desc.superpixels;
 
     descriptor_labels = {
         'R'; 'G'; 'B';
-        'Weighted mean';'Statistical std';
-        'First moment';'Second moment';'Third moment';
+        'Expected value';'Variance'; 'Std';
+        'First moment';'Third moment';
         'Relative variance';'Uniformity';'Entropy';
     };
 

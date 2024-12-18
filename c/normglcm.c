@@ -14,6 +14,7 @@
 void computeMaskGLCM(mxDouble *OUTPTR, int *out_counter, mxSingle *IMPTR, mxLogical *MASKPTR, mwSize m, mwSize n, int nl);
 void computeGLCM(mxDouble *OUTPTR, int *out_counter, mxSingle *IMPTR, mwSize m, mwSize n, int nl);
 void usageError(const char *id);
+void invalidEntriesError(int x, int y, mxSingle v);
 
 void mexFunction(int num_args_lhs, mxArray *pts_lhs[], int num_rhs, const mxArray *pts_rhs[]) {
     if (num_args_lhs > 1)
@@ -74,8 +75,9 @@ void mexFunction(int num_args_lhs, mxArray *pts_lhs[], int num_rhs, const mxArra
     else
         computeGLCM(OUTPTR, &occurrence_count, IMPTR, m, n, NLVAL);
 
+    int L = NLVAL*NLVAL;
     // normalize the glcm matrix
-    for (int i=0; i<NLVAL*NLVAL; i++) {
+    for (int i=0; i<L; i++) {
         OUTPTR[i] /= occurrence_count;
     }
 
@@ -86,43 +88,69 @@ void mexFunction(int num_args_lhs, mxArray *pts_lhs[], int num_rhs, const mxArra
 void computeMaskGLCM(mxDouble *OUTPTR, int *out_counter, mxSingle *IMPTR, mxLogical *MASKPTR, mwSize m, mwSize n, int nl) {
     int curr, next, counter  = 0;
 
-    for (int x=0; x<n-1; x++) {
-        for (int y=0; y<m; y++) {
-            if (!MASKPTR[y+x*m])
+    for (int y=0; y<m; y++) {
+        for (int x=0; x<n-1; x++) {
+            int curr_ind = y+x*m, next_ind = y+(x+1)*m;
+            if (!MASKPTR[next_ind]) {
+                x++; // pre-emptively skip next index since it's not part of the mask
                 continue;
-            else
-                curr = (int) floor(IMPTR[y+x*m] * nl);
+            }
+            else if (!MASKPTR[curr_ind]) {
+                continue;
+            }
+            else {
+                mxSingle cv = IMPTR[curr_ind];
+                if (cv < 0.0 || cv > 1.0)
+                    invalidEntriesError(x,y,cv);
+                curr = cv == 1.0 ? nl - 1 : (int) floor(cv * nl);
+            }
 
-            next = (int) floor(IMPTR[y+(x+1)*m] * nl);
+            mxSingle nv = IMPTR[next_ind];
+            if (nv < 0.0 || nv > 1.0)
+                invalidEntriesError(x+1,y,nv);
 
-            OUTPTR[curr*nl + next]++;
+            next = nv == 1.0 ? nl - 1 : (int) floor(nv * nl);
+
+            OUTPTR[curr + next*nl]++;
             curr = next;
             counter++;
         }
     }
-
     *out_counter = counter;
 }
 
 void computeGLCM(mxDouble *OUTPTR, int *out_counter, mxSingle *IMPTR, mwSize m, mwSize n, int nl) {
     int curr, next, counter = 0;
-    for(int x=0; x<n-1; x++) {
-        for(int y=0; y<m; y++) {
-            if (x == 0)
-                curr = (int) floor(IMPTR[y+x*m] * nl);
-            next = (int) floor(IMPTR[y+(x+1)*m] * nl);
-            OUTPTR[curr*nl + next]++;
+    for (int y=0; y<m; y++) {
+        for (int x=0; x<n-1; x++) {
+            if (x == 0) {
+                mxSingle cv = IMPTR[y+x*m];
+                if (cv < 0.0 || cv > 1.0)
+                    invalidEntriesError(x, y, cv);
+                curr = cv == 1.0 ? nl - 1 : (int) floor(cv * nl);
+            }
+            mxSingle nv = IMPTR[y+(x+1)*m];
+            if (nv < 0.0 || nv > 1.0)
+                invalidEntriesError(x+1, y, nv);
+
+            next = nv == 1.0 ? nl - 1 : (int) floor(nv * nl);
+            
+            OUTPTR[curr + next*nl]++;
             curr = next;
             counter++;
         }
     }
     *out_counter = counter;
 }
-
 void usageError(const char *id) {
     mexErrMsgIdAndTxt(id,
 	    "Correct usage: normglcm(im, num_levels, mask)\n"
-        "    im: grayscale image of type single.\n"
+        "    im: grayscale image of type single, all entries must have values in the range [0,1].\n"
         "    (optional) num_levels: specifies the dimensions of the output matrix, must be >= 2.\n"
         "    (optional) mask: it specifies the pixels to consider, must match the dimensions of im and of logical type.");
+}
+
+void invalidEntriesError(int x, int y, mxSingle v) {
+    mexErrMsgIdAndTxt("MATLAB:normglcm:firstInputHasInvalidEntries", 
+        "The input im has an entry at index (%i,%i) with the value '%.2f', which is outside the expected range of [0,1].", y+1, x+1, v);
 }

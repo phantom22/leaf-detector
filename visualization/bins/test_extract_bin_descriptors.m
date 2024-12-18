@@ -49,7 +49,7 @@ function out = test_extract_bin_descriptors(im, num_superpixels)
         descriptors(k,11) = entr;
     end
 
-    descriptors(:,1:11) = normalize(descriptors(:,1:11), 'center');
+    descriptors(:,1:11) = normalize(descriptors(:,1:11), 'norm');
 
     out.descriptors = descriptors;
     out.superpixels = SP;
