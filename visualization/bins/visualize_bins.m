@@ -1,7 +1,7 @@
 function visualize_bins
     close all;
 
-    im = imread('images/N/11.jpg');
+    im = imread('images/D/11.jpg');
     %t = medfilt3(im,[5 5 1]);
 
     %noshadowim = im ./ imgaussfilt(rgb2gray(im),gaussiansigma(50),"Padding","symmetric");

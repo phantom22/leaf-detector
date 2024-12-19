@@ -35,7 +35,7 @@ function out = extract_slic_descriptors(im, num_superpixels, compactness)
     %[sobel,~] = mysobel(gim, 1);
     %L = leaf_law(gim);
 
-    num_features = 9;
+    num_features = 8;
     descriptors = zeros(N_SP, num_features, 'single');
 
     for k = 1:N_SP
@@ -49,13 +49,13 @@ function out = extract_slic_descriptors(im, num_superpixels, compactness)
         %[~,~,~,~,~,~,~,~,~,unif,~,~] = glcmfeatures(glcm);
 
         descriptors(k,1:3) = sum(sum( im(ry,rx) .* cmask )) / mass;
-        descriptors(k,4) = sum(sum( fgim(ry,rx) .* cmask )) / mass;
-        descriptors(k,5) = sum(sum( cbim(ry,rx) .* cmask )) / mass;
-        descriptors(k,6) = sum(sum( aim(ry,rx) .* cmask )) / mass;
-        descriptors(k,7) = sum(sum( sim(ry,rx) .* cmask )) / mass;
+        %descriptors(k,4) = sum(sum( fgim(ry,rx) .* cmask )) / mass;
+        descriptors(k,4) = sum(sum( cbim(ry,rx) .* cmask )) / mass;
+        descriptors(k,5) = sum(sum( aim(ry,rx) .* cmask )) / mass;
+        descriptors(k,6) = sum(sum( sim(ry,rx) .* cmask )) / mass;
         %descriptors(k,7) = var;
-        descriptors(k,8) = unif;
-        descriptors(k,9) = entr;
+        descriptors(k,7) = unif;
+        descriptors(k,8) = entr;
     end
 
     descriptors(:,1:num_features) = normalize(descriptors(:,1:num_features),'norm');

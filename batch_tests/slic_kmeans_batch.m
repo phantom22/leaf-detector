@@ -1,8 +1,9 @@
-function outs = slic_kmeans_batch(num_superpixels,compactness,input_dir,num_clusters)
+function outs = slic_kmeans_batch(input_dir,clustering_handle,num_superpixels,compactness,num_clusters)
     arguments
-        num_superpixels = 4500;
-        compactness = 18;
         input_dir = 'images/L';
+        clustering_handle = @slic_kmeans_clustering;
+        num_superpixels = 4000;
+        compactness = 18;
         num_clusters = 2;
     end
     close all;
@@ -20,7 +21,7 @@ function outs = slic_kmeans_batch(num_superpixels,compactness,input_dir,num_clus
     for k=1:num_images
         im = imread(fullfile(input_dir, fnames{k}));
         desc = extract_slic_descriptors(im, num_superpixels,compactness); 
-        outs(:,:,k) = slic_kmeans(im, desc, num_clusters, false, false);
+        outs(:,:,k) = clustering_handle(im, desc, num_clusters, false, false);
         og_images(:,:,:,k) = im;
     end
     elapsed = toc;

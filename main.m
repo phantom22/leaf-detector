@@ -1,8 +1,8 @@
 function main
     im = imread('images/N/11.jpg');
 
-    desc = extract_slic_descriptors(im, 4000, 18);
-    slic_kmeans(im, desc, 5, true, true);
+    desc = extract_slic_descriptors(im, 400, 18);
+    slic_spectral_clustering(im, desc, 2, true, true);
 
     %disp(size(desc.descriptors))
 
