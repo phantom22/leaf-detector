@@ -1,8 +1,12 @@
 function visualize_glcm
     close all;
 
-    im = imread('images/M/17.jpg');
+    im = imread('images/D/1.jpg');
+
+    %profile on;
     desc = test_extract_glcm_descriptors(im, 4000);
+    %profile off;
+    %profile viewer;
     descriptors = desc.descriptors;
     SP = desc.superpixels;
 
@@ -14,11 +18,11 @@ function visualize_glcm
         'Uniformity';'Homogeneity';'Entropy';
     };
 
-    %num_descriptors = size(descriptors, 2);
+    num_descriptors = size(descriptors, 2);
 
     f1 = figure;
     f1.WindowState = "maximized";
-    for d=1:15
+    for d=1:num_descriptors
         vals = descriptors(:,d);
 
         subplot(5, 3, d);

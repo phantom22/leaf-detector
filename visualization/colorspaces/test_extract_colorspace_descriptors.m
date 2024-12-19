@@ -1,5 +1,5 @@
-function out = test_extract_glcm_descriptors(im, num_superpixels)
-    tic;
+function out = test_extract_colorspace_descriptors(im, num_superpixels, compactness)
+    %tic;
     if ~isa(im,'single')
         im = im2single(im);
     end
@@ -12,7 +12,7 @@ function out = test_extract_glcm_descriptors(im, num_superpixels)
 
     [SP,N_SP] = superpixels(im, num_superpixels, ...
                      'Method', 'slic', ...
-                     'Compactness', 18);
+                     'Compactness', compactness);
 
     rprops = regionprops(SP, 'BoundingBox');
 
@@ -25,39 +25,35 @@ function out = test_extract_glcm_descriptors(im, num_superpixels)
     iY = arrayfun(@(s, e) s:e, ystart, yend, 'UniformOutput', false);
   
     hsvim = rgb2hsv(im);
-    %sim = hsvim(:,:,2);
-    gim = hsvim(:,:,3);
+    ycbcrim = rgb2ycbcr(im);
+    labim = rgb2lab(im);
+    xyzim = rgb2lab(im);
+    ntscim = rgb2ntsc(im);
+    linim = rgb2lin(im);
+    gim = rgb2gray(im);
 
-    descriptors = zeros(N_SP, 15, 'single'); % rgb + 16x16 glcm
+    descriptors = zeros(N_SP, 7, 'single');
 
     for k = 1:N_SP
         ry = iY{k};
         rx = iX{k};
         cmask = SP(ry, rx) == k; % cropped mask
-        npixels = nnz(cmask);
+        mass = nnz(cmask);
 
-        [e_x, e_y, var_x, var_y, std_x, std_y, max_prob, corr, contrast, uniformity, homogeneity, entr] = glcmfeatures(normglcm(gim(ry,rx), 64, cmask));
-
-        descriptors(k,1:3) = sum(sum( im(ry,rx) .* cmask )) / npixels;
-        descriptors(k,4) = e_x;
-        descriptors(k,5) = e_y;
-        descriptors(k,6) = var_x;
-        descriptors(k,7) = var_y;
-        descriptors(k,8) = std_x;
-        descriptors(k,9) = std_y;
-        descriptors(k,10) = max_prob;
-        descriptors(k,11) = corr;
-        descriptors(k,12) = contrast;
-        descriptors(k,13) = uniformity;
-        descriptors(k,14) = homogeneity;
-        descriptors(k,15) = entr;
+        descriptors(k,1:3) = sum(sum( im(ry,rx) .* cmask )) / mass;
+        descriptors(k,4:6) = sum(sum( hsvim(ry,rx) .* cmask )) / mass;
+        descriptors(k,7:9) = sum(sum( ycbcrim(ry,rx) .* cmask )) / mass;
+        descriptors(k,10:12) = sum(sum( labim(ry,rx) .* cmask )) / mass;
+        descriptors(k,13:15) = sum(sum( xyzim(ry,rx) .* cmask )) / mass;
+        descriptors(k,16:18) = sum(sum( ntscim(ry,rx) .* cmask )) / mass;
+        descriptors(k,19:21) = sum(sum( linim(ry,rx) .* cmask )) / mass;
+        descriptors(k,22) = sum(sum( gim(ry,rx) .* cmask )) / mass;
     end
-
-    descriptors(:,1:15) = normalize(descriptors(:,1:15), 'norm');
+    descriptors(:,1:22) = normalize(descriptors(:,1:22),'norm');
 
     out.descriptors = descriptors;
     out.superpixels = SP;
     out.num_superpixels = N_SP;
     out.original_size = size(im);
-    toc;
+    %toc;
 end

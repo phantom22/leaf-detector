@@ -1,7 +1,7 @@
 function visualize_laws
     close all;
 
-    im = imread('images/C/5.jpg');
+    im = imread('images/N/11.jpg');
     t = medfilt3(im,[5 5 1]);
 
     %noshadowim = im ./ imgaussfilt(rgb2gray(im),gaussiansigma(50),"Padding","symmetric");

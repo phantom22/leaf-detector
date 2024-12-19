@@ -1,8 +1,8 @@
 function main
-    im = imread('images/N/20.jpg');
+    im = imread('images/N/11.jpg');
 
-    desc = extract_slic_descriptors(im, 4300, 18);
-    slic_kmeans(im, desc, 2, true, true);
+    desc = extract_slic_descriptors(im, 4000, 18);
+    slic_kmeans(im, desc, 5, true, true);
 
     %disp(size(desc.descriptors))
 

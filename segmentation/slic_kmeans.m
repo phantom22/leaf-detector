@@ -1,5 +1,5 @@
 function K = slic_kmeans(im, desc, num_clusters, display, draw_slic)
-    labels = kmeans(desc.descriptors, num_clusters, 'MaxIter', 1000); % N_SP x 1
+    labels = kmeans(desc.descriptors, num_clusters, 'MaxIter', 1000, 'Replicates', 5); % N_SP x 1
     SP = desc.superpixels;
     K = labels(SP); % riassegna ai superpixel le nuove labels date da kmeans
     
