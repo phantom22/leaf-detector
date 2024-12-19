@@ -1,9 +1,7 @@
 function visualize_colorspaces
     close all;
 
-    im = imread('images/N/11.jpg');
-
-    im = imgaussfilt3(im, gaussiansigma(5),"Padding","symmetric");
+    im = imread('images/B/16.jpg');
 
     desc = test_extract_colorspace_descriptors(im, 4000, 18);
     descriptors = desc.descriptors;
