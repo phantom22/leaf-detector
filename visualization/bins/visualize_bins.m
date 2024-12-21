@@ -1,7 +1,7 @@
 function visualize_bins
     close all;
 
-    im = imread('images/D/11.jpg');
+    im = imread('images/test/test2.jpg');
     %t = medfilt3(im,[5 5 1]);
 
     %noshadowim = im ./ imgaussfilt(rgb2gray(im),gaussiansigma(50),"Padding","symmetric");
@@ -10,7 +10,7 @@ function visualize_bins
     %noshadowim = medfilt3((noshadowim - ns_min)  / (ns_max - ns_min), [9 9 1], "symmetric");
     %t = imgaussfilt3(noshadowim, gaussiansigma(3));
 
-    desc = test_extract_bin_descriptors(im, 4000, 128);
+    desc = test_extract_bin_descriptors(im, 9349, 128);
     descriptors = desc.descriptors;
     SP = desc.superpixels;
 

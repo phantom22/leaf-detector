@@ -1,4 +1,4 @@
-function [out,sob_g,sob_m,lap_g,lap_m,canny_m] = test_extract_sobel_and_laplacian_descriptors(im, num_superpixels)
+function [out,sob_g,sob_m,lap_g,lap_m,canny_m,sob_d] = test_extract_sobel_and_laplacian_descriptors(im, num_superpixels)
     %tic;
     if ~isa(im,'single')
         im = im2single(im);
@@ -29,13 +29,13 @@ function [out,sob_g,sob_m,lap_g,lap_m,canny_m] = test_extract_sobel_and_laplacia
     gim = hsvim(:,:,3);
 
     fgim = imgaussfilt(gim,gaussiansigma(9),'Padding','symmetric');
-    sob_g = mysobel(gim, 0.5);
+    [sob_g,sob_d] = mysobel(gim, 0);
     sob_m = edge(fgim,'sobel');
     lap_g = mylaplacian(gim);
     lap_m = edge(fgim,'zerocross');
-    canny_m = edge(fgim,'canny',0.225);
+    canny_m = edge(fgim,'canny',0.21);
 
-    descriptors = zeros(N_SP, 5, 'single');
+    descriptors = zeros(N_SP, 6, 'single');
 
     for k = 1:N_SP
         ry = iY{k};
@@ -48,9 +48,10 @@ function [out,sob_g,sob_m,lap_g,lap_m,canny_m] = test_extract_sobel_and_laplacia
         descriptors(k,3) = sum(sum( lap_g(ry,rx) .* cmask )) / npixels;
         descriptors(k,4) = sum(sum( lap_m(ry,rx) .* cmask )) / npixels;
         descriptors(k,5) = sum(sum( canny_m(ry,rx) .* cmask )) / npixels;
+        descriptors(k,6) = sum(sum( sob_d(ry,rx) .* cmask )) / npixels;
     end
 
-    descriptors(:,1:5) = normalize(descriptors(:,1:5), 'norm');
+    descriptors(:,1:6) = normalize(descriptors(:,1:6), 'norm');
 
     out.descriptors = descriptors;
     out.superpixels = SP;

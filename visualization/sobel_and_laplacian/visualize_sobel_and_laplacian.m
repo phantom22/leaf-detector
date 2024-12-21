@@ -10,14 +10,14 @@ function visualize_sobel_and_laplacian
     %noshadowim = medfilt3((noshadowim - ns_min)  / (ns_max - ns_min), [9 9 1], "symmetric");
     %t = imgaussfilt3(noshadowim, gaussiansigma(3));
 
-    [desc,sob_g,sob_m,lap_g,lap_m,canny_m] = test_extract_sobel_and_laplacian_descriptors(im, 4800);
+    [desc,sob_g,sob_m,lap_g,lap_m,canny_m,sob_d] = test_extract_sobel_and_laplacian_descriptors(im, 1000);
     descriptors = desc.descriptors;
     SP = desc.superpixels;
 
     descriptor_labels = {
         'Sobel Gradient'; 'Sobel Mask';
         'Laplacian Gradient'; 'Laplacian Mask';
-        'Canny Mask';
+        'Canny Mask'; 'Sobel Dir';
     };
 
     num_descriptors = size(descriptors, 2);
@@ -34,37 +34,45 @@ function visualize_sobel_and_laplacian
         title(descriptor_labels{d});
     end
 
+    bdmask = boundarymask(desc.superpixels);
+    overlaycol = 'red';
 
     f2 = figure;
     f2.WindowState = "maximized";
 
     subplot(3, 2, 1);
-    imagesc(sob_g);
+    imagesc(imoverlay(sob_g,bdmask,overlaycol))
     axis image;
     axis off;
     title(descriptor_labels{1});
 
     subplot(3, 2, 2);
-    imagesc(sob_m);
+    imagesc(imoverlay(sob_m,bdmask,overlaycol))
     axis image;
     axis off;
     title(descriptor_labels{2});
 
     subplot(3, 2, 3);
-    imagesc(lap_g);
+    imagesc(imoverlay(lap_g,bdmask,overlaycol))
     axis image;
     axis off;
     title(descriptor_labels{3});
 
     subplot(3, 2, 4);
-    imagesc(lap_m);
+    imagesc(imoverlay(lap_m,bdmask,overlaycol));
     axis image;
     axis off;
     title(descriptor_labels{4});
 
     subplot(3, 2, 5);
-    imagesc(canny_m);
+    imagesc(imoverlay(canny_m,bdmask,overlaycol));
     axis image;
     axis off;
     title(descriptor_labels{5});
+
+    subplot(3, 2, 6);
+    imagesc(imoverlay(sob_d,bdmask,overlaycol));
+    axis image;
+    axis off;
+    title(descriptor_labels{6});
 end
