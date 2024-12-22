@@ -24,7 +24,7 @@ function out = extract_slic_descriptors(im, num_superpixels, compactness)
     sim = hsvim(:,:,2);
     gim = hsvim(:,:,3);
 
-    fgim = imgaussfilt(gim,gaussiansigma(1.1));
+    %fgim = imgaussfilt(gim,gaussiansigma(3));
 
     ycbcrim = rgb2ycbcr(im);
     cbim = ycbcrim(:,:,2);
@@ -32,7 +32,7 @@ function out = extract_slic_descriptors(im, num_superpixels, compactness)
     labim = rgb2lab(im);
     aim = labim(:,:,2);
 
-    [sobel,sobel_dir] = mysobel(fgim, 1);
+    [sobel,sobel_dir] = mysobel(gim, 1);
 
     sobel = sobel / max(max(sobel));
     

@@ -1,15 +1,17 @@
-function [falsi_positivi,falsi_negativi,inverti]=calcola_errore(mashera, ground_truth)
-    differenze=ground_truth-mashera;
-    differenzeInv=ground_truth-(1-mashera);
-    falsi_positivi=sum(sum(differenze==-1));
-    falsi_negativi=sum(sum(differenze==1));
-    falsi_positiviinv=sum(sum(differenzeInv==-1));
-    falsi_negativiinv=sum(sum(differenzeInv==1));
-    if falsi_negativiinv+falsi_positiviinv<falsi_negativi+falsi_positivi
-        inverti=1;
-        falsi_positivi=falsi_positiviinv;
-        falsi_negativi=falsi_negativiinv;
+function [fp,fn,invertiti] = calcola_errore(mask, gt_mask)
+    diff = gt_mask-mask;
+    diff_inv = gt_mask-(1-mask);
+
+    fp = sum(sum(diff == -1));
+    fn = sum(sum(diff == 1));
+    fp_inv = sum(sum(diff_inv == -1));
+    fn_inv = sum(sum(diff_inv == 1));
+
+    if fn_inv+fp_inv < fn+fp
+        invertiti=1;
+        fp=fp_inv;
+        fn=fn_inv;
     else
-        inverti=0;
+        invertiti=0;
     end
 end
