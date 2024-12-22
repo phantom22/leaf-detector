@@ -1,7 +1,7 @@
 function visualize_main
     close all;
 
-    im = imread('images/C/16.jpg');
+    im = imread('images/D/3.jpg');
 
     desc = extract_slic_descriptors(im, 4800, 18);
     descriptors = desc.descriptors;
@@ -10,6 +10,7 @@ function visualize_main
         'R'; 'G'; 'B';
         'Cb from YCbCr';'A from LAB';'S from HSV';
         'Histogram Uniformity';'Histogram Entropy';'Sobel Gradient';
+        'Sobel Dir';
     };
 
     num_descriptors = size(descriptors, 2);

@@ -1,7 +1,7 @@
 function outs = slic_kmeans_batch(input_dir,clustering_handle,num_superpixels,compactness,num_clusters)
     arguments
-        input_dir = 'images/L';
-        clustering_handle = @slic_kmeans_clustering;
+        input_dir = 'images/D';
+        clustering_handle = @slic_spectral_clustering;
         num_superpixels = 4000;
         compactness = 18;
         num_clusters = 2;

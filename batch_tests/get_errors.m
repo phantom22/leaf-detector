@@ -33,9 +33,10 @@ ground_truth_nnz = zeros(tot_num_images,1);
 
 for i=1:num_classes
     num_images = class_num_images(i);
-    
+
     if display
-        [m,n] = calcola_ingombro_minimo_subplot(num_images);
+        %[m,n] = calcola_ingombro_minimo_subplot(num_images);
+        ax_positions = get_minimal_grid(num_images);
         fig = figure;
         set(fig, 'WindowState', 'maximized');
         set(fig, 'Name', input_dirs(i));
@@ -64,7 +65,8 @@ for i=1:num_classes
         end
 
         if display
-            subplot(m,n,p);
+            %subplot(m,n,p);
+            subplot('Position',ax_positions(:,p));
             imagesc(ground_truth - labels);
             colorbar;
             title(class_im_names{i}{k});
@@ -88,7 +90,7 @@ tot_output = min(10,length(v_pegg));
 for p=tot_output:-1:1
     pegg = idx_pegg(p);
     migl = idx_migl(p);
-    fprintf("[%s posto]\n  pegg '%s': %.2f%% errori (fp:%d,fn:%d,gt:%d).\n  migl '%s': %.2f%% error (fp:%d,fn:%d,gt:%d).\n", ...
+    fprintf("[%s posto]\n  pegg '%s': %.2f%% errori (fp:%d,fn:%d,gt:%d).\n  migl '%s': %.2f%% errori (fp:%d,fn:%d,gt:%d).\n", ...
         num_romani{p}, ...
         errori{pegg,1}, ...
         v_pegg(p), ...

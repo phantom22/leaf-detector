@@ -4,12 +4,12 @@ function [num_images,paths,names] = image_paths_from_dir(directory, extension)
         extension = 'jpg'; % Default extension
     end
 
-    if isscalar(directory)
+    sz = length(directory);
+
+    if sz == 1 && (ischar(directory) || isstring(directory))
         [num_images,paths,names] = retrieve_data(directory, extension);
         return;
     end
-
-    sz = length(directory);
 
     num_images = zeros(sz,1,'double');
     paths = cell(sz,1);

@@ -10,6 +10,8 @@ function non_bg = regGrow_batch(input_dir)
     non_bg = zeros(300, 400, num_images, 'single');
 
     rg = regGrow();
+
+    ax_positions = get_minimal_grid(num_images);
     
     tic;
     for k=1:num_images
@@ -23,7 +25,7 @@ function non_bg = regGrow_batch(input_dir)
     elapsed = toc;
     fprintf("Elapsed time is %ss (%s per image on average).\n", num2str(elapsed), num2str(elapsed/num_images));
 
-    subplot_rows = ceil(num_images/4);
+    %subplot_rows = ceil(num_images/4);
     
     f1 = figure;
     f1.WindowState = "maximized";
@@ -31,7 +33,10 @@ function non_bg = regGrow_batch(input_dir)
     f1.Name = strcat("'",input_dir,"' clustered");
     for k=1:num_images
         fname = fnames{k};
-        subplot(subplot_rows,4,k); imagesc(non_bg(:,:,k)); colormap(jet); axis image; axis off; title(fname);
+        %subplot(subplot_rows,4,k); 
+        subplot('Position',ax_positions(:,k));
+        imagesc(non_bg(:,:,k));
+        colormap(jet); axis image; axis off; title(fname);
         %fprintf("%d/%d '%s' done.\n", k, num_images, fname);
     end
 
@@ -40,7 +45,9 @@ function non_bg = regGrow_batch(input_dir)
     f2.NumberTitle = 'off';
     f2.Name = strcat("'",input_dir,"' original");
     for k=1:num_images
-        subplot(subplot_rows,4,k); imshow(og_images(:,:,:,k)); title(fnames{k});
+        %subplot(subplot_rows,4,k); 
+        subplot('Position',ax_positions(:,k));
+        imshow(og_images(:,:,:,k)); title(fnames{k});
         %fprintf("%d/%d '%s' done.\n", k, num_images, fname);
     end
 end
