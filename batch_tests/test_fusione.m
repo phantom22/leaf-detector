@@ -34,8 +34,8 @@ for i=1:numel(from)
 
         % canali(:,:,3:5)=im;
         % canali=normalize(canali,"norm");
-        desc = extract_slic_descriptors(im,4000, 18);
-        labels=slic_spectral_clustering(im, desc, 3, false, false);
+        desc = seg_descriptors(im,4000, 18);
+        labels=spectral_clustering(im, desc, 3, false, false);
         feature=extract_fusion_descriptors(max(max(labels)),labels,canali);
         Z = linkage(feature, 'ward'); % Perform hierarchical clustering
         T = cluster(Z, 'cutoff', 0.01, 'criterion', 'inconsistent'); % Merge clusters using a threshold

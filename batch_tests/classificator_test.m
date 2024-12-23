@@ -26,7 +26,7 @@ end
 confmat = zeros(5,5,'single');
 for k=1:length(images)
     im = imread(images{k});
-    desc = extract_slic_descriptors(im, 350, 18);
+    desc = seg_descriptors(im, 350, 18);
     in_row = reshape(desc.descriptors, [], 1);
     actual_length = length(in_row);
     expected_length = length(leaf_classificator.ClassificationTree.PredictorNames);
@@ -40,7 +40,7 @@ end
 
 % for k=1:length(images)
     % im = imread(images{k});
-    % desc = extract_slic_descriptors(im, 350, 18);
+    % desc = seg_descriptors(im, 350, 18);
     % in_row = reshape(desc.descriptors, [], 1);
     % actual_length = length(in_row);
     % expected_length = length(leaf_classificator.ClassificationTree.PredictorNames);

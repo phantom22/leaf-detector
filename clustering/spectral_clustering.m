@@ -1,5 +1,7 @@
-function K = slic_kmeans_clustering(im, desc, num_clusters, display, draw_slic)
-    labels = kmeans(desc.descriptors, num_clusters, 'MaxIter', 1000, 'Replicates', 5); % N_SP x 1
+function K = spectral_clustering(im, desc, num_clusters, display, draw_slic)
+     % euclidean, cityblock, (minkowski,P=3)
+    labels = spectralcluster(desc.descriptors, num_clusters, 'Distance', 'minkowski', 'P', 2.3);
+
     SP = desc.superpixels;
     K = labels(SP); % riassegna ai superpixel le nuove labels date da kmeans
     

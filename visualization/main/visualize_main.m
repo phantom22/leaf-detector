@@ -3,7 +3,7 @@ function visualize_main
 
     im = imread('images/D/3.jpg');
 
-    desc = extract_slic_descriptors(im, 4800, 18);
+    desc = seg_descriptors(im, 4800, 18);
     descriptors = desc.descriptors;
     SP = desc.superpixels;
     descriptor_labels = {

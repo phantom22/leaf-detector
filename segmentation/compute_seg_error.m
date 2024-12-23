@@ -1,8 +1,9 @@
-function [fp,fn,invertiti] = calcola_errore(mask, gt_mask)
+function [fp,fn] = compute_seg_error(mask, gt_mask)
     diff = gt_mask-mask;
 
     fp = sum(sum(diff == -1));
     fn = sum(sum(diff == 1));
+
     % if gestisci_inverso
     %     diff_inv = gt_mask-(1-mask);
     %     fp_inv = sum(sum(diff_inv == -1));

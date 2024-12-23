@@ -1,6 +1,6 @@
-function labels=extract_labels(im,num_superpixels,compactness)
-    desc = extract_slic_descriptors(im, num_superpixels, compactness);
-    labels = slic_spectral_clustering(im, desc, 2, false, false);
+function labels = extract_labels(im, num_superpixels, compactness)
+    desc = seg_descriptors(im, num_superpixels, compactness);
+    labels = spectral_clustering(im, desc, 2, false, false);
     labels = labels-1;
     
     % boundingBox=regionprops(labels,"BoundingBox");
@@ -10,8 +10,10 @@ function labels=extract_labels(im,num_superpixels,compactness)
     %  end
 
     bordi=[labels(:,1); labels(1,:)'; labels(:,end); labels(end,:)'];
-    %disp(double(sum(bordi))/length(bordi));
-    if(sum(bordi)/length(bordi)>0.5)
-        labels=1-labels;
+
+    % se più del 50% dei pixel di bordo risultano essere classificati come
+    % foglie
+    if sum(bordi)/length(bordi) > 0.5
+        labels = 1-labels;
     end
 end

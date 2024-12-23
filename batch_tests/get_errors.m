@@ -1,6 +1,5 @@
 close all;
-
-tic;
+profile on;
 
 class_folders = ["A","B","C","D","E","F","G","H","I","L","M","N"];
 num_classes = length(class_folders);
@@ -38,7 +37,6 @@ for i=1:num_classes
     num_images = class_num_images(i);
 
     if display
-        %[m,n] = calcola_ingombro_minimo_subplot(num_images);
         ax_positions = get_minimal_grid(num_images);
         fig = figure;
         set(fig, 'WindowState', 'maximized');
@@ -54,27 +52,24 @@ for i=1:num_classes
         ground_truth = imread(gt_path) >= 50;
         ground_truth_nnz(pos) = nnz(ground_truth);
         
-        labels=extract_labels(im,num_superpixels,5);
+        labels = extract_labels(im, num_superpixels, 5);
         
-         labels= imerode(labels,see);
-         labels= imdilate(labels,sec);
-        
-        [regioni,maxReg]=bwlabel(labels);
-        areas=regionprops(regioni,"Area");
-        areas=[areas.Area];
-        [~,inx]=max(areas);
-        labels=regioni==inx;
+        % cleanup dei label
+        labels = imerode(labels,see);
+        labels = imdilate(labels,sec);
+        [regioni,~] = bwlabel(labels);
+        areas = regionprops(regioni, "Area");
+        areas = [areas.Area];
+        [~,inx] = max(areas);
+        labels = regioni==inx;
 
-        [falsi_positivi, falsi_negativi] = calcola_errore(labels, ground_truth);
+        [falsi_positivi, falsi_negativi] = compute_seg_error(labels, ground_truth);
+
         errori{pos,1} = im_path;
         errori{pos,2} = falsi_positivi;
         errori{pos,3} = falsi_negativi;
 
-
-
-
         if display
-            %subplot(m,n,p);
             subplot('Position',ax_positions(:,p));
             imagesc(ground_truth - labels);
             colorbar;
@@ -94,7 +89,7 @@ errori_complessivi_pct = (errori_complessivi ./ ground_truth_nnz) * 100;
 [v_pegg,idx_pegg] = sort(errori_complessivi_pct, 'descend');
 [v_migl,idx_migl] = sort(errori_complessivi_pct, 'ascend');
 num_romani = {'I','II','III','IV','V','VI','VII','VIII','IX','X'};
-tot_output = min(10,length(v_pegg));
+tot_output = min(10, length(v_pegg));
 
 for p=tot_output:-1:1
     pegg = idx_pegg(p);
@@ -113,11 +108,9 @@ for p=tot_output:-1:1
         ground_truth_nnz(migl) ...
     );
 end
-tot_gt=sum(ground_truth_nnz);
-fprintf("[Errore medio: %.2f%%]\n", sum(errori_complessivi) / tot_gt * 100);
-fprintf("[Falso positivp: %.2f%%]\n",sum(falsi_positivi) / tot_gt * 100);
-fprintf("[Falso negativo: %.2f%%]\n", sum(falsi_negativi) / tot_gt * 100);
 
-toc;
-% profile off;
-% profile viewer;
+tot_gt = 100 / sum(ground_truth_nnz);
+fprintf("[Errore medio: %.2f%%]\n[Falso positivo: %.2f%%]\n[Falso negativo: %.2f%%]\n", ...
+    sum(errori_complessivi) * tot_gt, ...
+    sum(falsi_positivi) * tot_gt, ...
+    sum(falsi_negativi) * tot_gt);

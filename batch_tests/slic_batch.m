@@ -15,7 +15,7 @@ function [data,num_images,max_num_superpixels] = slic_batch(num_superpixels,comp
     tic;
     for k=1:num_images
         im = imread(images{k});
-        desc = extract_slic_descriptors(im, num_superpixels, compactness);  % num_superpixels x 4
+        desc = seg_descriptors(im, num_superpixels, compactness);  % num_superpixels x 4
 
         if max_num_superpixels < desc.num_superpixels
             max_num_superpixels = desc.num_superpixels;
