@@ -51,18 +51,12 @@ for i=1:num_classes
         ground_truth = imread(gt_path) >= 50;
         ground_truth_nnz(pos) = nnz(ground_truth);
         
-        desc = extract_slic_descriptors(im, num_superpixels, 18);
-        labels = slic_spectral_clustering(im, desc, 2, false, false);
+        labels=extract_labels(im,num_superpixels);
 
-        labels = labels-1;
-        [falsi_positivi, falsi_negativi, invertiti] = calcola_errore(labels, ground_truth);
+        [falsi_positivi, falsi_negativi] = calcola_errore(labels, ground_truth,false);
         errori{pos,1} = im_path;
         errori{pos,2} = falsi_positivi;
         errori{pos,3} = falsi_negativi;
-
-        if invertiti
-            labels = 1-labels;
-        end
 
         if display
             %subplot(m,n,p);
@@ -104,8 +98,10 @@ for p=tot_output:-1:1
         ground_truth_nnz(migl) ...
     );
 end
-
-fprintf("[Errore medio: %.2f%%]\n", sum(errori_complessivi) / sum(ground_truth_nnz) * 100);
+tot_gt=sum(ground_truth_nnz);
+fprintf("[Errore medio: %.2f%%]\n", sum(errori_complessivi) / tot_gt * 100);
+fprintf("[Falso negativo: %.2f%%]\n",sum(falsi_positivi) / tot_gt * 100);
+fprintf("[Falso negativo: %.2f%%]\n", sum(falsi_negativi) / tot_gt * 100);
 
 toc;
 % profile off;
