@@ -1,5 +1,5 @@
-function labels=extract_labels(im,num_superpixels)
-    desc = extract_slic_descriptors(im, num_superpixels, 18);
+function labels=extract_labels(im,num_superpixels,compactness)
+    desc = extract_slic_descriptors(im, num_superpixels, compactness);
     labels = slic_spectral_clustering(im, desc, 2, false, false);
     labels = labels-1;
     
@@ -9,8 +9,8 @@ function labels=extract_labels(im,num_superpixels)
     %      labels=1-labels;
     %  end
 
-    bordi=[labels(:,1); labels(1,:)'; labels(:,size(labels,2)); labels(size(labels,1),:)'];
-    disp(double(sum(bordi))/length(bordi));
+    bordi=[labels(:,1); labels(1,:)'; labels(:,end); labels(end,:)'];
+    %disp(double(sum(bordi))/length(bordi));
     if(sum(bordi)/length(bordi)>0.5)
         labels=1-labels;
     end
