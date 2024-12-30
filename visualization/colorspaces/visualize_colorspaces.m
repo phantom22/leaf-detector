@@ -20,14 +20,14 @@ function visualize_colorspaces
 
     num_descriptors = size(descriptors, 2);
 
-    rows = ceil(num_descriptors / 3);
+    [rows,cols] = calcola_ingombro_minimo_subplot(length(descriptor_labels));
 
     f1 = figure;
     f1.WindowState = "maximized";
     for d=1:num_descriptors
         vals = descriptors(:,d);
 
-        subplot(rows, 3, d);
+        tsubplot(rows, cols, d);
         imagesc(vals(SP));
         axis image;
         axis off;

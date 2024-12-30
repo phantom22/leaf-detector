@@ -1,6 +1,7 @@
-function K = spectral_clustering(im, desc, num_clusters, display, draw_slic)
+function K = spectral_clustering(im, desc, pdist, display, draw_slic)
      % euclidean, cityblock, (minkowski,P=3)
-    labels = spectralcluster(desc.descriptors, num_clusters, 'Distance', 'minkowski', 'P', 2.3);
+    labels = spectralcluster(desc.descriptors, 2, 'Distance', 'minkowski', 'P', pdist);
+    %labels = spectralcluster(desc.descriptors, num_clusters, 'Distance', 'euclidean');
 
     SP = desc.superpixels;
     K = labels(SP); % riassegna ai superpixel le nuove labels date da kmeans
