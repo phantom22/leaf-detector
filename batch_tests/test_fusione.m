@@ -35,14 +35,15 @@ for i=1:numel(from)
         % canali(:,:,3:5)=im;
         % canali=normalize(canali,"norm");
         desc = seg_descriptors(im,4000, 18);
-        labels=spectral_clustering(im, desc, 3, false, false);
+        labels=spectral_clustering(desc, 3);
         feature=extract_fusion_descriptors(max(max(labels)),labels,canali);
         Z = linkage(feature, 'ward'); % Perform hierarchical clustering
         T = cluster(Z, 'cutoff', 0.01, 'criterion', 'inconsistent'); % Merge clusters using a threshold
         finale=fondi_maschere(labels,T);
         
 
-        subplot(righe,colonne,num),imagesc(finale),title(images(k).name), axis image, axis off;
+        tsubplot(righe,colonne,num);
+        timagesc(finale, title(images(k).name));
         num=num+1;
         % subplot(righe,colonne,num),imagesc(finale),title(images(k).name), axis image, axis off;
         % num=num+1;

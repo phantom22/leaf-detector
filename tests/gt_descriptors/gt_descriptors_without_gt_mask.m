@@ -1,11 +1,13 @@
-function out = seg_descriptors(im, num_superpixels, compactness)
+function out = gt_descriptors_without_gt_mask(im, gt_rgb)
     if ~isa(im,'single')
         im = im2single(im);
     end
 
-    [SP,N_SP] = superpixels(im, num_superpixels, ...
+    [SP,N_SP] = superpixels(im, 4800, ...
                      'Method', 'slic', ...
-                     'Compactness', compactness);
+                     'Compactness', 25);
+
+    mask_avg = zeros(N_SP, 1);
 
     rprops = regionprops(SP, 'BoundingBox');
 
@@ -28,7 +30,7 @@ function out = seg_descriptors(im, num_superpixels, compactness)
     labim = rgb2lab(im);
     aim = labim(:,:,2);
 
-    [sobel,sobel_dir] = mysobel(gim, 1/2);
+    [sobel,sobel_dir] = mysobel(gim, pi/2);
 
     num_features = 10;
     descriptors = zeros(N_SP, num_features, 'single');
@@ -39,6 +41,8 @@ function out = seg_descriptors(im, num_superpixels, compactness)
         cmask = SP(ry, rx) == k; % cropped mask
         mass = nnz(cmask);
         [unif,entr] = stripped_binfeatures(gim(ry,rx), 256, cmask);
+
+        mask_avg(k) = sum(sum( gt_rgb(ry,rx,1) .* cmask )) / mass;
 
         descriptors(k,1:3) = sum(sum( im(ry,rx) .* cmask )) / mass;
         descriptors(k,4) = sum(sum( cbim(ry,rx) .* cmask )) / mass;
@@ -55,6 +59,7 @@ function out = seg_descriptors(im, num_superpixels, compactness)
 
     out.descriptors = descriptors;
     out.superpixels = SP;
+    out.mask_avg = mask_avg;
     out.num_superpixels = N_SP;
     out.original_size = size(im);
 end

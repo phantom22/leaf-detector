@@ -20,17 +20,11 @@ function visualize_glcm
 
     num_descriptors = size(descriptors, 2);
 
-    f1 = figure;
-    f1.WindowState = "maximized";
+    figure_maximized;
     for d=1:num_descriptors
         vals = descriptors(:,d);
 
-        subplot(5, 3, d);
-        imagesc(vals(SP));
-        axis image;
-        axis off;
-        title(descriptor_labels{d});
+        tsubplot(5, 3, d);
+        timagesc(vals(SP),descriptor_labels{d});
     end
-
-    %disp(descriptors(:,12));
 end

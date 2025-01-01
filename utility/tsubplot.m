@@ -1,10 +1,14 @@
 function sp = tsubplot(m, n, p, vertical_padding, horizontal_padding)
+    % tsubplot(m, n, p, vertical_padding=0.2, horizontal_padding=0.15)
+    %
+    % equivalent to subplot(m, n, p) but results in a tight subplot grid.
+    % vertical_padding and horizontal_padding are optional and control the tightness.
     arguments
         m {mustBeInteger,mustBePositive};
         n {mustBeInteger,mustBePositive};
         p {mustBeInteger,mustBePositive};
-        vertical_padding = 0.2;    % 10%
-        horizontal_padding = 0.15; %  5%
+        vertical_padding = 0.2;    % 20%
+        horizontal_padding = 0.15; % 15%
     end
 
     if p > m*n

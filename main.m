@@ -1,5 +1,5 @@
 %function main
-    im = im2single(imread('images/D/3.jpg'));
+    im = im2single(imread('images/D/1.jpg'));
 
     % gim = im2gray(im);
     % 
@@ -18,18 +18,7 @@
     % 
     % return;
 
-    desc = seg_descriptors(im, 4800, 3);
-    labels = spectral_clustering(im, desc, 2, false, false);
-    labels = labels-1;
-
-    num = sum(labels(:,1))+sum(labels(1,:))+sum(labels(:,end))+sum(labels(end,:));
-    den = (2*size(im,1)+2*size(im,2));
-
-    disp([num,den,num/den]);
-
-    if num/den > 0.5
-        labels = 1-labels;
-    end
+    labels = extract_labels(im, 4800);
 
     figure_maximized; 
     ax1 = tsubplot(1,2,1); imshow(im); colormap("gray");

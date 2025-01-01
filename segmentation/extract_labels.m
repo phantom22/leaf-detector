@@ -1,6 +1,6 @@
 function labels = extract_labels(im, num_superpixels)
     desc = seg_descriptors(im, num_superpixels, 5);
-    labels = spectral_clustering(im, desc, 2.3, false, false);
+    labels = spectral_clustering(desc, 2.3);
     labels = labels-1;
     % boundingBox=regionprops(labels,"BoundingBox");
     % %disp([im_path "," int2str( boundingBox.BoundingBox(3)) "," int2str(boundingBox.BoundingBox(4))]);
@@ -9,11 +9,11 @@ function labels = extract_labels(im, num_superpixels)
     %  end
 
     bordi=[labels(:,1); labels(1,:)'; labels(:,end); labels(end,:)'];
-    % se più del 50% dei pixel di bordo risultano essere classificati come
-    % foglie
 
     % (sum(labels(:,1))+sum(labels(1,:))+sum(labels(:,end))+sum(labels(end,:))/(2*size(im,1)+2*size(im,2)))
 
+    % se più del 50% dei pixel di bordo risultano essere classificati come
+    % foglie
     if sum(bordi)/length(bordi) > 0.5
         labels = 1-labels;
     end

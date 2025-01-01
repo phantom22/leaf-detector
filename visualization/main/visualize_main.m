@@ -3,7 +3,7 @@ function visualize_main
 
     im = imread('images/D/3.jpg');
 
-    desc = seg_descriptors(im, 4800, 18);
+    desc = seg_descriptors(im, 4800, 5);
     descriptors = desc.descriptors;
     SP = desc.superpixels;
     descriptor_labels = {
@@ -15,19 +15,13 @@ function visualize_main
 
     num_descriptors = size(descriptors, 2);
 
-    rows = ceil(num_descriptors / 3);
+    ax_positions = get_minimal_grid(num_descriptors);
 
-    f1 = figure;
-    f1.WindowState = "maximized";
+    figure_maximized;
     for d=1:num_descriptors
         vals = descriptors(:,d);
 
-        subplot(rows, 3, d);
-        imagesc(vals(SP));
-        axis image;
-        axis off;
-        title(descriptor_labels{d});
+        subplot('Position', ax_positions(:,d));
+        timagesc(vals(SP), descriptor_labels{d});
     end
-
-    %disp(descriptors(:,12));
 end

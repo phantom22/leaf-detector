@@ -29,7 +29,17 @@ function [out,sob_g,sob_m,lap_g,lap_m,canny_m,sob_d] = test_extract_sobel_and_la
     gim = hsvim(:,:,3);
 
     fgim = imgaussfilt(gim,gaussiansigma(9),'Padding','symmetric');
-    [sob_g,sob_d] = mysobel(gim, 0);
+    [sob_g,sob_d] = mysobel(gim, -inf);
+
+    sob_d = mod(sob_d + pi, 2*pi);
+
+    sobm = sum(sum(sob_d)) / numel(sob_d);
+
+    disp([sobm,min(min(sob_d)),max(max(sob_d))]);
+
+    sobt = sobm * 0.5;
+    sob_d(sob_d < sobt) = 0;
+
     sob_m = edge(fgim,'sobel');
     lap_g = mylaplacian(gim);
     lap_m = edge(fgim,'zerocross');

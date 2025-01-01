@@ -10,7 +10,7 @@ function visualize_laws
     %noshadowim = medfilt3((noshadowim - ns_min)  / (ns_max - ns_min), [9 9 1], "symmetric");
     %t = imgaussfilt3(noshadowim, gaussiansigma(3));
 
-    [desc,LL,LE,LS,LR,LW,EL,EE,ES,ER,EW,SL,SE,SS,SR,SW,RL,RE,RS,RR,RW,WL,WE,WS,WR,WW] = test_extract_law_descriptors(t, 300);
+    [desc,LL,LE,LS,LR,LW,EL,EE,ES,ER,EW,SL,SE,SS,SR,SW,RL,RE,RS,RR,RW,WL,WE,WS,WR,WW] = test_extract_law_descriptors(t, 4800);
     masks = {LL,LE,LS,LR,LW,EL,EE,ES,ER,EW,SL,SE,SS,SR,SW,RL,RE,RS,RR,RW,WL,WE,WS,WR,WW};
     descriptors = desc.descriptors;
     SP = desc.superpixels;
@@ -26,35 +26,25 @@ function visualize_laws
 
     num_descriptors = size(descriptors, 2);
 
-    f1 = figure;
-    f1.WindowState = "maximized";
+    figure_maximized;
     for d=1:3
         vals = descriptors(:,d);
-        subplot(6, 4, d);
-        imagesc(vals(SP));
-        axis image;
-        axis off;
-        title(descriptor_labels{d});
+        tsubplot(6, 4, d);
+        timagesc(vals(SP), descriptor_labels{d});
     end
 
     vals = descriptors(:,29);
-    subplot(6, 4, 4);
-    imagesc(vals(SP));
-    axis image;
-    axis off;
-    title(descriptor_labels{29});
+    tsubplot(6, 4, 4);
+    timagesc(vals(SP), descriptor_labels{29});
 
     for d=4:num_descriptors-1
         vals = descriptors(:,d);
-        subplot(6, 5, d+2);
-        imagesc(vals(SP));
-        axis image;
-        axis off;
-        title(descriptor_labels{d});
+        tsubplot(6, 5, d+2);
+        timagesc(vals(SP), descriptor_labels{d});
     end
 
     for g=1:5
-        set(figure, 'WindowState', 'maximized');
+        figure_maximized;
         
         i1 = 4+(g-1)*5;
         i2 = i1+1;
@@ -68,35 +58,20 @@ function visualize_laws
         v4 = descriptors(:,i4);
         v5 = descriptors(:,i5);
 
-        subplot(3,2,1);
-        imagesc(v1(SP));
-        axis image;
-        axis off;
-        title(descriptor_labels{i1});
+        tsubplot(3,2,1);
+        timagesc(v1(SP), descriptor_labels{i1});
 
-        subplot(3,2,2);
-        imagesc(v2(SP));
-        axis image;
-        axis off;
-        title(descriptor_labels{i2});
+        tsubplot(3,2,2);
+        timagesc(v2(SP), descriptor_labels{i2});
 
-        subplot(3,1,2);
-        imagesc(v3(SP));
-        axis image;
-        axis off;
-        title(descriptor_labels{i3});
+        tsubplot(3,1,2);
+        timagesc(v3(SP), descriptor_labels{i3});
 
-        subplot(3,2,5);
-        imagesc(v4(SP));
-        axis image;
-        axis off;
-        title(descriptor_labels{i4});
+        tsubplot(3,2,5);
+        timagesc(v4(SP), descriptor_labels{i4});
 
-        subplot(3,2,6);
-        imagesc(v5(SP));
-        axis image;
-        axis off;
-        title(descriptor_labels{i5});
+        tsubplot(3,2,6);
+        timagesc(v5(SP), descriptor_labels{i5});
     end
 
     for g=1:5
@@ -108,39 +83,19 @@ function visualize_laws
         i4 = i1+3;
         i5 = i1+4;
 
-        subplot(3,2,1);
-        imagesc(masks{i1});
-        axis image;
-        axis off;
-        colorbar;
-        title(descriptor_labels{i1+3});
+        tsubplot(3,2,1);
+        timagesc(masks{i1},descriptor_labels{i1+3});
 
-        subplot(3,2,2);
-        imagesc(masks{i2});
-        axis image;
-        axis off;
-        colorbar;
-        title(descriptor_labels{i2+3});
+        tsubplot(3,2,2);
+        timagesc(masks{i2},descriptor_labels{i2+3});
 
-        subplot(3,1,2);
-        imagesc(masks{i3});
-        axis image;
-        axis off;
-        colorbar;
-        title(descriptor_labels{i3+3});
+        tsubplot(3,1,2);
+        timagesc(masks{i3},descriptor_labels{i3+3});
 
-        subplot(3,2,5);
-        imagesc(masks{i4});
-        axis image;
-        axis off;
-        colorbar;
-        title(descriptor_labels{i4+3});
+        tsubplot(3,2,5);
+        timagesc(masks{i4},descriptor_labels{i4+3});
 
-        subplot(3,2,6);
-        imagesc(masks{i5});
-        axis image;
-        axis off;
-        colorbar;
-        title(descriptor_labels{i5+3});
+        tsubplot(3,2,6);
+        timagesc(masks{i5},descriptor_labels{i5+3});
     end
 end

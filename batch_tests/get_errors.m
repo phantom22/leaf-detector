@@ -1,8 +1,21 @@
-function get_errors(class_folders, display, morphology)
+function get_errors(class_folders, morphology, display)
+    % get_errors(class_folders, [erode_radius, dilate_radius] = [2,1], display=1)
+    %
+    % es. per testare una sola classe:
+    %   get_errors("A");
+    %
+    % es. per testare più classi con erode di r=3 e dilate di r=2
+    %   get_errors(["A","B","D"], [3,2]);
+    %
+    % es. per non usare morfologia
+    %   get_errors("M", [0,0]);
+    %
+    % es. per farlo su tutte le classi
+    %   get_errors;
     arguments
         class_folders {mustBeText} = ["A","B","C","D","E","F","G","H","I","L","M","N"];
-        display = 1;
         morphology {mustBeNonnegative} = [2,1];
+        display = 1;
     end
     
     close all;
@@ -26,6 +39,8 @@ function get_errors(class_folders, display, morphology)
         see = strel('disk', morphology(1)); 
         sed = strel('disk', morphology(2));
         fprintf("[morphology: disk erode r=%d, disk dilate r=%d]\n", morphology);
+    else
+        fprintf("[no morphology]\n");
     end
     
     [class_num_images, class_full_paths, class_im_names] = image_paths_from_dir(input_dirs);
@@ -38,8 +53,6 @@ function get_errors(class_folders, display, morphology)
     pos = 1;
     
     ground_truth_nnz = zeros(tot_num_images,1);
-    
-    elapsed = 0;
 
     tic;
     for i=1:num_classes
@@ -47,7 +60,7 @@ function get_errors(class_folders, display, morphology)
     
         if display
             ax_positions = get_minimal_grid(num_images);
-            figure_maximized(strcat(input_dirs(i)," GIALLO=fn=1 BLU=fp=-1"));
+            figure_maximized(input_dirs(i)," GIALLO=fn=1 BLU=fp=-1");
             p = 1;
         end
     
@@ -61,7 +74,7 @@ function get_errors(class_folders, display, morphology)
             end
     
             im = im2double(imread(im_path));
-            ground_truth = imread(gt_path) >= 50;
+            ground_truth = imread(gt_path) > 1; % 1 perché con zero crea artefatti.
             ground_truth_nnz(pos) = nnz(ground_truth);
             
             labels = extract_labels(im, num_superpixels);
@@ -90,9 +103,9 @@ function get_errors(class_folders, display, morphology)
                 axis off;
     
                 if num_classes == 1
-                    title(class_im_names{k});
+                    title(strcat(class_folders(i),"/",class_im_names{k}));
                 else
-                    title(class_im_names{i}{k});
+                    title(strcat(class_folders(i),"/",class_im_names{i}{k}));
                 end
     
                 p = p + 1;
