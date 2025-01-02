@@ -1,4 +1,4 @@
-function get_errors(class_folders, morphology, display)
+function get_errors(class_folders, morphology, display, save)
     % get_errors(class_folders, [erode_radius, dilate_radius] = [2,1], display=1)
     %
     % es. per testare una sola classe:
@@ -16,6 +16,7 @@ function get_errors(class_folders, morphology, display)
         class_folders {mustBeText} = ["A","B","C","D","E","F","G","H","I","L","M","N"];
         morphology {mustBeNonnegative} = [2,1];
         display = 1;
+        save=false;
     end
     
     close all;
@@ -27,6 +28,14 @@ function get_errors(class_folders, morphology, display)
     % ["images\ground_truth\A", "images\ground_truth\B", ...]
     gt_dirs = strcat('images\ground_truth\', class_folders); 
     
+    if save
+        save_dirs=strcat('images\segmented\', class_folders); 
+        for i = 1:length(save_dirs)
+            if ~exist(save_dirs(i), 'dir')
+                 mkdir(save_dirs(i));
+            end
+        end
+    end
     desired_superpixel_size = 5;
     % per adesso è hard-coded la dimensione dell'immagine aspettata (300x400)
     num_superpixels = ceil(300*400 / (desired_superpixel_size ^ 2));
@@ -44,7 +53,7 @@ function get_errors(class_folders, morphology, display)
     end
     
     [class_num_images, class_full_paths, class_im_names] = image_paths_from_dir(input_dirs);
-    [~, gt_full_paths, ~] = image_paths_from_dir(gt_dirs);
+    [~, gt_full_paths, image_name] = image_paths_from_dir(gt_dirs);
     
     tot_num_images = sum(class_num_images);
     
@@ -88,6 +97,12 @@ function get_errors(class_folders, morphology, display)
                 areas = [areas.Area];
                 [~,inx] = max(areas);
                 labels = regioni==inx;
+            end
+
+            if save
+                nomeImmagine=image_name{i};
+                nomeImmagine=strsplit(char(nomeImmagine(k)),'.');
+                imwrite(im.*labels, strcat(save_dirs(i),"\",nomeImmagine{1},".jpg"));
             end
     
             [falsi_positivi, falsi_negativi] = compute_seg_error(labels, ground_truth);
