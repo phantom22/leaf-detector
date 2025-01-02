@@ -5,7 +5,7 @@ function out = gt_descriptors_with_gt_mask(im, gt_rgb)
 
     [SP,N_SP] = superpixels(gt_rgb, 4800, ...
                      'Method', 'slic', ...
-                     'Compactness', 5);
+                     'Compactness', 25);
 
     mask_avg = zeros(N_SP, 1);
 

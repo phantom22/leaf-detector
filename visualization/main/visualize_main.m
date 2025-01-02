@@ -22,6 +22,6 @@ function visualize_main
         vals = descriptors(:,d);
 
         subplot('Position', ax_positions(:,d));
-        timagesc(vals(SP), descriptor_labels{d});
+        imagesc(vals(SP)), title(descriptor_labels{d});
     end
 end
