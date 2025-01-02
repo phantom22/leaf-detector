@@ -1,28 +1,22 @@
-%function main
-    im = im2single(imread('images/D/1.jpg'));
+function main
+    load("models\dirty-classificator1.mat","leaf_classificator");
 
-    % gim = im2gray(im);
-    % 
-    % a = gim ./ (imgaussfilt3(gim,gaussiansigma(45),'Padding','symmetric'));
-    % a = a ./ max(max(a));
-    % 
-    % t = a - gim;
-    % 
-    % figure; 
-    % ax1 = minsubplot(2,2,1); imshow(gim); colormap("gray");
-    % ax2 = minsubplot(2,2,2); imshow(a);
-    % ax3 = minsubplot(2,2,3); imagesc(t); colormap(jet); axis image; colorbar;
-    % ax4 = minsubplot(2,2,4); imshow(t > 0.1);
-    % linkaxes([ax1,ax2,ax3,ax4],'xy');
-    % axis tight;
-    % 
-    % return;
+    im = im2double(imread("images/A/1.jpg"));
+    num_superpixels = ceil(size(im,1) * size(im,2) / 50);
 
-    labels = extract_labels(im, 4800);
+    fprintf("[num_superpixels %d]\n", num_superpixels);
+
+    desc = seg_descriptors(im, num_superpixels, 25);
+    descriptors = desc.descriptors;
+    SP = desc.superpixels;
+    
+    P = leaf_classificator.predictFcn(descriptors);
+    K = round(P);
+    labels = K(SP);
 
     figure_maximized; 
     ax1 = tsubplot(1,2,1); imshow(im); colormap("gray");
-    ax2 = tsubplot(1,2,2); imshow(labels);
+    ax2 = tsubplot(1,2,2); timagesc(labels);
     linkaxes([ax1,ax2],'xy');
     axis tight;
-%end
+end

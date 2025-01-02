@@ -5,7 +5,7 @@ function test_trainedmodel(class_folders, morphology, display)
         display = 1;
     end
     
-    load('models/dirty-classificator.mat', 'leaf_classificator');
+    load('models/dirty-classificator1.mat', 'leaf_classificator');
         
     close all;
     
@@ -65,7 +65,6 @@ function test_trainedmodel(class_folders, morphology, display)
             im = im2double(imread(im_path));
             gt = imread(gt_path) > 1; % 1 perché con zero crea artefatti.
             ground_truth_nnz(pos) = nnz(gt);
-    
     
             desc = seg_descriptors(im, num_superpixels, 25);
             descriptors = desc.descriptors;
