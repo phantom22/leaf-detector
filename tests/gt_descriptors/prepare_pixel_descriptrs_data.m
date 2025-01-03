@@ -1,0 +1,49 @@
+targets = ["A","B","C","D","E","F","G","H","I","L","M","N"];
+
+input_dirs = strcat('images\', targets); 
+gt_dirs = strcat('images\ground_truth\', targets); 
+
+num_targets = length(targets);
+
+[file_count, og_full_paths, file_names] = image_paths_from_dir(input_dirs);
+
+[~, gt_full_paths, ~] = image_paths_from_dir(gt_dirs);
+
+total_image_count = sum(file_count);
+
+
+udata = zeros(total_image_count, 300 * 400, 15, 'single');
+
+i = 1;
+tic;
+
+
+for t=1:num_targets
+    target_file_count = file_count(t);
+
+    for k=1:target_file_count
+        %disp([og_full_paths{t}(k) gt_full_paths{t}(k)]);
+        % convert BW grayscale image to BW rgb image
+        im = im2single(imread(string(og_full_paths{t}(k))));
+        gt = reshape(single(imread(string(gt_full_paths{t}(k))) > 1), [], 1);
+    
+        desc = pixel_descriptors(im); % NUM_PIXELSxNUM_F
+        desc(:,15) = gt;
+
+        udata(i,:,:) = desc(:,:);
+
+        i = i + 1;
+    end
+
+    elapsed = toc;
+    fprintf("'%s' done (elapsed: %.0fs, ETA: %.0fs).\n", targets(t), round(elapsed), abs(round(elapsed/(i-1)*(total_image_count - i + 1))));
+end
+
+data = reshape(udata,[],15);
+
+% dirtiness = data(:,11);
+% [~,idx] = sort(dirtiness);
+% 
+% sorteddata = data(idx,:);
+% 
+% sorteddata(:,11) = round(sorteddata(:,11));
