@@ -8,7 +8,7 @@ function get_total_dirtiness
     total_sample_count = 0;
 
     for t=1:length(targets)
-        mask_averages = get_superpixel_dirtiness(targets(t));
+        mask_averages = get_superpixel_dirtiness(targets(t),true);
         sample_count = size(mask_averages, 1);
 
         min_sum = min_sum + sum(mask_averages(:,1));
