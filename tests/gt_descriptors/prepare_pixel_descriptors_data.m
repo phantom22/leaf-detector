@@ -11,12 +11,10 @@ num_targets = length(targets);
 
 total_image_count = sum(gt_file_count);
 
-
 udata = zeros(total_image_count, 300 * 400, 15, 'single');
 
 i = 1;
 tic;
-
 
 for t=1:num_targets
     target_file_count = gt_file_count(t);
