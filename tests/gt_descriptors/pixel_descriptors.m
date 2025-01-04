@@ -17,9 +17,11 @@ function descriptors = pixel_descriptors(im)
     R5 = [1 -4 6 -4 1];
     pim = padarray(gim, [2,2], 'symmetric', 'both');
 
-    descriptors(:,:,1) = hsvim(:,:,2);
-    descriptors(:,:,2) = ycbcrim(:,:,2);
-    descriptors(:,:,3) = labim(:,:,2);
+    descriptors(:,:,1) = hsvim(:,:,2); % s
+    descriptors(:,:,2) = ycbcrim(:,:,2); % cb
+    %descriptors(:,:,3) = ycbcrim(:,:,3); % cr
+    descriptors(:,:,3) = labim(:,:,2); % a
+    %descriptors(:,:,5) = labim(:,:,3); % b
     descriptors(:,:,4) = sobel;
     descriptors(:,:,5) = sobel_dir;
     descriptors(:,:,6) = conv2(L5,L5,pim,'valid');

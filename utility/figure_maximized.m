@@ -20,7 +20,7 @@ function f = figure_maximized(varargin)
 
     if nargin > 0
         if nargin == 1
-            f.Name = varargin;
+            f.Name = char(varargin{1});
         else
             f.Name = strcat(varargin{:});
         end

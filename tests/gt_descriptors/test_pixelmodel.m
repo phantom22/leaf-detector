@@ -1,15 +1,13 @@
 function test_pixelmodel(class_folders, morphology, display)
     arguments
-        class_folders = ["A","B","C","D","F","G","H","I","L","M","N"];
+        class_folders = ["A","B","C","D","E","F","G","H","I","L","M","N"];
         morphology = [0,0];
         display = 1;
     end
 
-    if evalin('base',"exist('pixel_classifier','var')")
-        pixel_classifier = evalin('base', 'pixel_classifier');
-    else
-        load('models/optimized-pixel-classifier.mat', 'pixel_classifier');
-    end
+    pixel_classifier = load_pixel_classifier();
+    %load('models\bigger-pixel-classifier.mat','pixel_classifier');
+    %pixel_classifier = classificatorB; 
         
     close all;
     
@@ -30,9 +28,11 @@ function test_pixelmodel(class_folders, morphology, display)
     end
     
     [class_num_images, class_full_paths, class_im_names] = image_paths_from_dir(input_dirs);
-    [~, gt_full_paths, ~] = image_paths_from_dir(gt_dirs);
+    [gt_num_images, gt_full_paths, ~] = image_paths_from_dir(gt_dirs);
+
+    %disp(gt_num_images - class_num_images);
     
-    tot_num_images = sum(class_num_images);
+    tot_num_images = sum(gt_num_images);
     
     errori = cell(tot_num_images,3);
     
@@ -42,7 +42,7 @@ function test_pixelmodel(class_folders, morphology, display)
     
     tic;
     for i=1:num_classes
-        num_images = class_num_images(i);
+        num_images = gt_num_images(i);
     
         if display
             ax_positions = get_minimal_grid(num_images);
