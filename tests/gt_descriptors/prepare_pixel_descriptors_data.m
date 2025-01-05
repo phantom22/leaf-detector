@@ -11,7 +11,7 @@ num_targets = length(targets);
 
 total_image_count = sum(gt_file_count);
 
-udata = zeros(total_image_count, 300 * 400, 15, 'single');
+udata = zeros(total_image_count, 300 * 400, 28, 'single');
 
 i = 1;
 tic;
@@ -25,7 +25,7 @@ for t=1:num_targets
         gt = single(imread(string(gt_full_paths{t}(k))) > 1);
     
         desc = pixel_descriptors(im); % NUM_PIXELSxNUM_F
-        desc(:,15) = gt(:);
+        desc(:,28) = gt(:);
 
         udata(i,:,:) = desc(:,:);
 
@@ -36,4 +36,4 @@ for t=1:num_targets
     fprintf("'%s' done (elapsed: %.0fs, ETA: %.0fs).\n", targets(t), round(elapsed), abs(round(elapsed/(i-1)*(total_image_count - i + 1))));
 end
 
-data = reshape(udata,[],15);
+data = reshape(udata,[],28);

@@ -1,7 +1,7 @@
 function visualize_colorspaces
     close all;
 
-    im = imread('images/D/2.jpg');
+    im = imread('images/Z/2.jpg');
 
     desc = test_extract_colorspace_descriptors(im, 4800, 5);
     descriptors = desc.descriptors;

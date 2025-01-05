@@ -27,10 +27,8 @@ function test_pixelmodel(class_folders, morphology, display)
         fprintf("[no morphology]\n");
     end
     
-    [class_num_images, class_full_paths, class_im_names] = image_paths_from_dir(input_dirs);
+    [~, class_full_paths, class_im_names] = image_paths_from_dir(input_dirs);
     [gt_num_images, gt_full_paths, ~] = image_paths_from_dir(gt_dirs);
-
-    %disp(gt_num_images - class_num_images);
     
     tot_num_images = sum(gt_num_images);
     

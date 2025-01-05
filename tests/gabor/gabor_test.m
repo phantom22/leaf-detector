@@ -1,56 +1,50 @@
-function gaborFeatures = createGaborFeatures(im)
+function createGaborFeatures(im)
 
-if size(im,3) == 3
-    im = rgb2lab(im);
-end
+    if size(im,3) == 3
+        im = rgb2lab(im);
+    end
+    
+    im = im2single(im);
+    
+    % imageSize = size(im);
+    % numRows = imageSize(1);
+    % numCols = imageSize(2);
+    % 
+    % wavelengthMin = 4/sqrt(2);
+    % wavelengthMax = hypot(numRows,numCols);
+    % n = floor(log2(wavelengthMax/wavelengthMin));
+    % wavelength = 2.^(0:(n-2)) * wavelengthMin;
+    % 
+    % deltaTheta = 45;
+    % orientation = 0:deltaTheta:(180-deltaTheta);
+    % 
+    % g = gabor(wavelength,orientation);
 
-im = im2single(im);
+    load('tests/gt_descriptors/gabordata.mat','gabor_filters', 'gabor_sigmas');
+    
+    gabormag = imgaborfilt(im(:,:,3), gabor_filters);
 
-imageSize = size(im);
-numRows = imageSize(1);
-numCols = imageSize(2);
+    gcount = length(gabor_filters);
 
-wavelengthMin = 4/sqrt(2);
-wavelengthMax = hypot(numRows,numCols);
-n = floor(log2(wavelengthMax/wavelengthMin));
-wavelength = 2.^(0:(n-2)) * wavelengthMin;
+    [m,n] = calcola_ingombro_minimo_subplot(gcount);
 
-deltaTheta = 45;
-orientation = 0:deltaTheta:(180-deltaTheta);
-
-g = gabor(wavelength,orientation);
-gabormag = imgaborfilt(im(:,:,1),g);
-
-for i = 1:length(g)
-    sigma = 0.5*g(i).Wavelength;
-    K = 3;
-    gabormag(:,:,i) = imgaussfilt(gabormag(:,:,i),K*sigma);
-    t = figure; 
-    t.WindowState = "maximized";
-    imagesc(gabormag(:,:,i));
-end
-
-
-
-% % Increases liklihood that neighboring pixels/subregions are segmented together
-% X = 1:numCols;
-% Y = 1:numRows;
-% [X,Y] = meshgrid(X,Y);
-% featureSet = cat(3,gabormag,X);
-% featureSet = cat(3,featureSet,Y);
-% featureSet = reshape(featureSet,numRows*numCols,[]);
-% 
-% % Normalize feature set
-% featureSet = featureSet - mean(featureSet);
-% featureSet = featureSet ./ std(featureSet);
-% 
-% gaborFeatures = reshape(featureSet,[numRows,numCols,size(featureSet,2)]);
-% 
-% % Add color/intensity into feature set
-% gaborFeatures = cat(3,gaborFeatures,im);
+    figure_maximized;
+    for i = 1:gcount
+        gabormag(:,:,i) = imgaussfilt(gabormag(:,:,i), gabor_sigmas(i));
+        tsubplot(n,m,i);
+        timagesc(gabormag(:,:,i), num2str(i));
+    end
 
 end
 
-im = imread("4.jpg");
+close all;
+
+im = imread("images/Z/5.jpg");
+im = imresize(im, [300 400]);
+
+disp(size(im));
 
 createGaborFeatures(im);
+
+figure_maximized;
+timshow(im);
