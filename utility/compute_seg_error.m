@@ -1,8 +1,10 @@
-function [fp,fn] = compute_seg_error(mask, gt_mask)
+function [tp,tn,fp,fn] = compute_seg_error(mask, gt_mask)
     diff = gt_mask-mask;
 
-    fp = sum(sum(diff == -1));
-    fn = sum(sum(diff == 1));
+    tp = nnz(gt_mask & mask);
+    tn = nnz(~gt_mask & ~mask);
+    fp = nnz(diff == -1);
+    fn = nnz(diff == 1);
 
     % if gestisci_inverso
     %     diff_inv = gt_mask-(1-mask);
