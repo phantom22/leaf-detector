@@ -1,13 +1,9 @@
 function test_pixelmodel(class_folders, morphology, display)
     arguments
         class_folders = ["A","B","C","D","E","F","G","H","I","L","M","N"];
-        morphology = [0,0];
+        morphology {mustBePositive, mustBeInteger} = 5;
         display = 1;
     end
-
-    pixel_classifier = load_pixel_classifier();
-    %load('models\bigger-pixel-classifier.mat','pixel_classifier');
-    %pixel_classifier = classificatorB; 
         
     close all;
     
@@ -17,20 +13,14 @@ function test_pixelmodel(class_folders, morphology, display)
     input_dirs = strcat('images\', class_folders); 
     % ["images\ground_truth\A", "images\ground_truth\B", ...]
     gt_dirs = strcat('images\ground_truth\', class_folders); 
-    
-    do_morphology = sum(morphology) ~= 0;
-    if do_morphology
-        see = strel('disk', morphology(1)); 
-        sed = strel('disk', morphology(2));
-        fprintf("[morphology: disk erode r=%d, disk dilate r=%d]\n", morphology);
-    else
-        fprintf("[no morphology]\n");
-    end
-    
+
     [~, class_full_paths, class_im_names] = image_paths_from_dir(input_dirs);
     [gt_num_images, gt_full_paths, ~] = image_paths_from_dir(gt_dirs);
     
     tot_num_images = sum(gt_num_images);
+    
+    se = strel('disk', morphology); 
+    fprintf("[morphology: disk r=%d, %d images]\n", morphology, tot_num_images);
     
     errori = cell(tot_num_images,5);
     
@@ -60,22 +50,8 @@ function test_pixelmodel(class_folders, morphology, display)
             im = im2double(imread(im_path));
             gt = imread(gt_path) > 1; % 1 perché con zero crea artefatti.
             ground_truth_nnz(pos) = nnz(gt);
-    
-            descriptors = pixel_descriptors(im);
-            
-            P = pixel_classifier.predictFcn(descriptors);
-            labels = reshape(P, 300, 400);
-            
-            % cleanup dei label
-            if do_morphology
-                labels = imerode(labels,see);
-                labels = imdilate(labels,sed);
-                [regioni,~] = bwlabel(labels);
-                areas = regionprops(regioni, "Area");
-                areas = [areas.Area];
-                [~,inx] = max(areas);
-                labels = regioni==inx;
-            end
+
+            labels = extract_labels(im, se);
     
             [veri_positivi, veri_negativi, falsi_positivi, falsi_negativi] = compute_seg_error(labels, gt);
     
