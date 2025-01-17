@@ -51,7 +51,7 @@ function test_pixelmodel(class_folders, morphology, display)
             gt = imread(gt_path) > 1; % 1 perché con zero crea artefatti.
             ground_truth_nnz(pos) = nnz(gt);
 
-            labels = extract_labels(im, se);
+            labels = extract_labels(im,se);
     
             [veri_positivi, veri_negativi, falsi_positivi, falsi_negativi] = compute_seg_error(labels, gt);
     

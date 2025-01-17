@@ -1,18 +1,22 @@
 function sig = signature_interp(bw, res)
-    bd = bwboundaries(bw);
-    b = bd{1};  % Extract the first boundary
-
     % Calculate the centroid of the boundary
-    tmp_c = regionprops(bw, double(bw), 'WeightedCentroid');
-    c = [tmp_c.WeightedCentroid(2), tmp_c.WeightedCentroid(1)];
+    tmp = regionprops(bw, double(bw), 'Area', 'WeightedCentroid', 'Orientation');
+    [~,max_area_idx] = max([tmp.Area]);
+
+    bd = bwboundaries(bw);
+    b = bd{max_area_idx};
+
+    c = [tmp(max_area_idx).WeightedCentroid(2), tmp(max_area_idx).WeightedCentroid(1)];
+
+    tau = 2*pi;
+    phase = tmp(max_area_idx).Orientation * (pi/180);
 
     % Compute distances and angles from the centroid
     diffs = b - c;
     ud = sqrt(sum(diffs.^2, 2));  % Distances
-    ua = atan2(diffs(:, 2), diffs(:, 1));  % Angles in radians
+    ua = mod(atan2(diffs(:, 2), diffs(:, 1)) - phase + pi, tau);  % Angles in radians, adjusted by phase
 
     % Normalize angles to [0, 2*pi]
-    tau = 2*pi;
     na = mod(ua + pi, tau);
 
     % Sort angles and distances

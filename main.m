@@ -3,14 +3,19 @@ function main
 
     tic;
 
-    im = im2double(imread("images/Z/19.jpg"));
-    im = imresize(im, [size(im,1) size(im,2)] / 2);
+    im = im2double(imread("images/B/2.jpg"));
+    im = imresize(im, [300 400]);
 
-    labels = extract_labels(im);
+    ss = strel('disk', 0);
+    se = strel('disk',5);
+    tic;
+    K = extract_labels(im,se);
+    [C,counts] = classify(im, K, ss);
+    toc;
 
-    figure_maximized; 
-    ax1 = tsubplot(1,2,1); timagesc(im);
-    ax2 = tsubplot(1,2,2); timagesc(labels); colormap(jet);
-    linkaxes([ax1,ax2],'xy');
+    figure_maximized;
+    ax1 = tsubplot(1,2,1); timagesc(im); colormap(turbo);
+    ax2 = tsubplot(1,2,2); visualize_classification(C);
+    linkaxes([ax1,ax2], 'xy');
     axis tight;
 end
