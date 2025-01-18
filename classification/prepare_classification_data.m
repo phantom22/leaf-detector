@@ -14,7 +14,7 @@ function [data, labels]=prepare_classification_data(class_folders,save)
     
     tot_num_images = sum(class_num_images);
     
-    data = zeros(tot_num_images,65);
+    data = zeros(tot_num_images,66);
     labels = zeros(tot_num_images,1);
     se=strel("disk",5);
     pos = 1;

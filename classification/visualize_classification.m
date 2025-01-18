@@ -17,5 +17,6 @@ function visualize_classification(C)
 
     cmap(1,:) = cmap(1,:) .* 0.4;
 
-    timagesc(C); colormap(cmap); colorbar;
+    timagesc(C); colormap(cmap);
+
 end

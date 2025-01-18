@@ -1,18 +1,30 @@
-function mainall
+%function mainall
 
     close all;
-
-    [num_images, class_full_paths, class_im_names] = image_paths_from_dir("images/A");
-
+    gt={"G","G","G",...
+        "D","D","D","D","D","D",...
+        "E","E","E","E",...
+        "I","I","I",...
+        "N","N","N",...
+        "L","L","L",...
+        "M","M","M","M",...
+        "F","F",...
+        "A","A","A",...
+        "B","B","B",...
+        "C","C","C"};
+    [num_images, class_full_paths, class_im_names] = image_paths_from_dir("images/Z");
     [m,n] = calcola_ingombro_minimo_subplot(num_images);
-
+    se=strel("disk",4);
     figure_maximized;
+    aree={};
     for i=1:num_images
-        im = imread(class_full_paths{i});
+        im = im2double( imread(class_full_paths{i}));
         im = imresize(im, size(im,1:2)/5);
-
+        mask=extract_labels(im,strel("disk",0));
+        aree{end+1}=regionprops(mask,"Area");
+        classificato=classify(im,mask,strel("disk",0));
         tsubplot(m,n,i);
-        timagesc(extract_labels(im), class_im_names{i});
+        visualize_classification(classificato);
+        visualizzaClassi(classificato),title(gt(i));
     end
-
-end
+%end
