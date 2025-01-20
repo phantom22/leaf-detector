@@ -1,4 +1,6 @@
 function [K,counts] = classify(I,BW,se)
+    %
+
     %classes = ["A","B","C","D","E","F","G","H","I","L","M","N"];
     leaf_classifier = load_leaf_classifier();
     [labels, numRegions] = bwlabel(BW);
@@ -21,7 +23,7 @@ function [K,counts] = classify(I,BW,se)
         full_mask = labels == idx(i);
         mask = bwopen(bwclose(full_mask,se),se);
 
-        data = double(extract_classification_data(I, mask)');
+        data = double(region_descriptors(I, mask)');
         C = leaf_classifier.predictFcn(data);
 
         CMASK = full_mask * C;

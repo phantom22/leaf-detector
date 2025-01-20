@@ -1,6 +1,7 @@
 %function mainall
 
     close all;
+
     gt={"G","G","G",...
         "D","D","D","D","D","D",...
         "E","E","E","E",...
@@ -15,6 +16,13 @@
     [num_images, class_full_paths, class_im_names] = image_paths_from_dir("images/Z");
     [m,n] = calcola_ingombro_minimo_subplot(num_images);
     se=strel("disk",4);
+
+    [num_images, class_full_paths, class_im_names] = image_paths_from_dir("images/Z");
+
+    [m,n] = calcola_ingombro_minimo_subplot(num_images);
+
+    se = strel('disk', 0);
+
     figure_maximized;
     aree={};
     for i=1:num_images

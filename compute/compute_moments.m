@@ -1,4 +1,4 @@
-function out=calcolaMomenti(mask)
+function [M20,M02] = compute_moments(mask)
 
     % Calcola proprietà con regionprops
     props = regionprops(mask, 'Centroid', 'Orientation');
@@ -20,9 +20,4 @@ function out=calcolaMomenti(mask)
     % Calcolo dei momenti centrati e non ruotati
     M20 = sum((X_r(:).^2) .* mask(:)); % Momento M20
     M02 = sum((Y_r(:).^2) .* mask(:)); % Momento M02
-    
-    out=zeros(2,1);
-    out(1)=M20;
-    out(2)=M02;
-
 end

@@ -17,7 +17,7 @@ function data = compute_classification(im_foglia,mask_foglia)
     solidity = stats.Solidity;
     boundary = bwboundaries(mask_foglia);
     boundaryCoords = boundary{1};
-    curvature = calculateCurvature(boundaryCoords);
+    curvature = compute_curvature(boundaryCoords);
     M20 = 0;
     [m,n]=size(mask_foglia);
     % Calcola il momento di ordine 2 (M20)

@@ -3,13 +3,15 @@ function main
 
     tic;
 
-    im = im2double(imread("images/Z/2.jpg"));
+    im = im2double(imread("images/Z/37.jpg"));
+
     im = imresize(im, [300 400]);
 
+    se = strel('disk', 0);
     ss = strel('disk', 0);
-    se = strel('disk',5);
+
     tic;
-    K = extract_labels(im,se);
+    K = extract_labels(im, se);
     [C,counts] = classify(im, K, ss);
     toc;
 

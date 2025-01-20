@@ -1,15 +1,14 @@
 function sig = signature_interp(bw, res)
     % Calculate the centroid of the boundary
     tmp = regionprops(bw, double(bw), 'Area', 'WeightedCentroid', 'Orientation');
-    [~,max_area_idx] = max([tmp.Area]);
-
+    
     bd = bwboundaries(bw);
-    b = bd{max_area_idx};
+    b = bd{1};
 
-    c = [tmp(max_area_idx).WeightedCentroid(2), tmp(max_area_idx).WeightedCentroid(1)];
+    c = [tmp.WeightedCentroid(2), tmp.WeightedCentroid(1)];
 
     tau = 2*pi;
-    phase = tmp(max_area_idx).Orientation * (pi/180);
+    phase = tmp.Orientation * (pi/180);
 
     % Compute distances and angles from the centroid
     diffs = b - c;
@@ -32,13 +31,13 @@ function sig = signature_interp(bw, res)
 
     sig = interp1(sa, sd, angles_interp, 'linear', 'extrap')';
 
-    m = min(sig);
-    M = max(sig);
-
-    if m == M
-        sig(:) = 0;
-        return;
-    end
-
-    sig(:) = (sig(:) - m) / (M - m);
+    % m = min(sig);
+    % M = max(sig);
+    % 
+    % if m == M
+    %    sig(:) = 0;
+    %    return;
+    % end
+    % 
+    % sig(:) = (sig(:) - m) / (M - m);
 end

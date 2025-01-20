@@ -20,7 +20,7 @@ function createGaborFeatures(im)
     % 
     % g = gabor(wavelength,orientation);
 
-    load('tests/gt_descriptors/gabordata.mat','gabor_filters', 'gabor_sigmas');
+    load('segmentation/gabordata.mat','gabor_filters', 'gabor_sigmas');
     
     gabormag = imgaborfilt(im(:,:,3), gabor_filters);
 

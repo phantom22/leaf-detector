@@ -1,5 +1,4 @@
-
-function curv = calculateCurvature(coords)
+function curv = compute_curvature(coords)
     % Calcola la differenza tra i punti adiacenti
     dx = diff(coords(:,1));
     dy = diff(coords(:,2));
