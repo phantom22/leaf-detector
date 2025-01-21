@@ -22,7 +22,7 @@ function d = region_descriptors(im, leaf_mask)
         'Area', 'Perimeter', 'Eccentricity', 'Centroid', 'Circularity', ...
         'Solidity', 'ConvexHull', 'ConvexArea');
 
-    d = zeros(20,1,'single');
+    d = zeros(17,1,'single');
 
     ConvexPerimeter = cellfun(@(hull) sum(sqrt(sum(diff([hull; hull(1, :)], 1, 1).^2, 2))), {s.ConvexHull});
     
@@ -30,35 +30,37 @@ function d = region_descriptors(im, leaf_mask)
     d(2) = s.MinorAxisLength;
     d(3) = s.Area;
     d(4) = s.Perimeter;
-    d(5) = s.Eccentricity;
-    d(6) = s.MajorAxisLength / s.MinorAxisLength;
-    d(7) = s.Circularity;
-    d(8) = s.Solidity;
-    d(9) = s.Perimeter^2 / s.Area;
-    d(10) = s.Perimeter / s.MajorAxisLength;
-    d(11) = d(10) / s.MinorAxisLength;
-    d(12) = ConvexPerimeter / s.Perimeter;
-    d(13) = (s.ConvexArea - s.Area) /  s.Area;
-    d(14) =  s.Area / s.ConvexArea;
-    d(15) = sqrt(4 * s.Area / pi);
+    d(5) = s.MajorAxisLength / s.MinorAxisLength;
+    
+    %d(9) = s.Perimeter^2 / s.Area;
+    d(6) = s.Perimeter / s.MajorAxisLength;
+    d(7) = d(6) / s.MinorAxisLength;
+    d(8) = ConvexPerimeter / s.Perimeter;
+    %d(13) = (s.ConvexArea - s.Area) /  s.Area;
+    %d(14) =  s.Area / s.ConvexArea;
+    %d(15) = sqrt(4 * s.Area / pi);
     %d(16) = size(s.ConvexHull,1);
+
+    d(9) = s.Eccentricity;
+    d(10) = s.Circularity;
+    d(11) = s.Solidity;
 
     nglcm = normglcm(gim, 256, logical(leaf_mask));
     [~,~,variance,~,~,~,~,~,contrast,uniformity,homogeneity,entropy] = glcmfeatures(nglcm);
 
-    d(16) = variance;
-    d(17) = contrast;
-    d(18) = uniformity;
-    d(19) = homogeneity;
-    d(20) = entropy;
+    d(12) = variance;
+    d(13) = contrast;
+    d(14) = uniformity;
+    d(15) = homogeneity;
+    d(16) = entropy;
 
-    [hist_uniformity, hist_entropy] = stripped_binfeatures(gim, 256, logical(leaf_mask));
+    [hist_uniformity, ~] = stripped_binfeatures(gim, 256, logical(leaf_mask));
 
-    d(21) = hist_uniformity;
-    d(22) = hist_entropy;
+    d(17) = hist_uniformity;
+    %d(22) = hist_entropy;
 
     im_area = size(im,1) * size(im,2);
-    d(1:15) = d(1:15) / im_area;
+    d(1:8) = d(1:8) / im_area;
 
     % L5 = [1 4 6 4 1]; 
     % E5 = [-1 -2 0 2 1];

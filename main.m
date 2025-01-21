@@ -1,7 +1,7 @@
 function main
     tic;
 
-    im = im2double(imread("images/Z/4.jpg"));
+    im = im2double(imread("images/A/4.jpg"));
 
     f = sqrt(size(im,1) * size(im,2) / 120000);
 
