@@ -1,18 +1,16 @@
 function main
-    close all;
-
     tic;
 
-    im = im2double(imread("images/Z/37.jpg"));
+    im = im2double(imread("images/Z/4.jpg"));
 
     im = imresize(im, [300 400]);
 
-    se = strel('disk', 0);
-    ss = strel('disk', 0);
+    se = strel('disk', 5);
+    dummy_se = strel('disk', 0);
 
     tic;
-    K = extract_labels(im, se);
-    [C,counts] = classify(im, K, ss);
+    K = segment(im, se);
+    [C,counts] = classify(im, K, dummy_se);
     toc;
 
     figure_maximized;

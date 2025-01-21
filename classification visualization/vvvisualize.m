@@ -1,12 +1,16 @@
 function vvvisualize(data, labels, data_labels)
-
     unique_labels = unique(labels);
     colors = lines(length(unique_labels));
 
     num_features = size(data,2);
-    for f=1:num_features
+    
+    [m,n] = calcola_ingombro_minimo_subplot(num_features - 1);
+
+    figure_maximized;
+    for f=1:num_features-1
         % Plot dei dati
-        figure_maximized;
+        tsubplot(m,n,f);
+        
         hold on;
         for i = 1:length(unique_labels)
             % Seleziona i punti con l'etichetta corrente
@@ -16,8 +20,6 @@ function vvvisualize(data, labels, data_labels)
         hold off;
         
         % Aggiunta di etichette, titolo e legenda
-        xlabel('Classe (Distribuzione)');
-        ylabel('Feature');
         title(data_labels{f});
     end
 end

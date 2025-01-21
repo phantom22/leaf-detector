@@ -86,7 +86,7 @@ function get_errors(class_folders, morphology, display, save)
             ground_truth = imread(gt_path) > 1; % 1 perché con zero crea artefatti.
             ground_truth_nnz(pos) = nnz(ground_truth);
             
-            labels = extract_labels(im, num_superpixels);
+            labels = segment(im, num_superpixels);
             
             % cleanup dei label
             if do_morphology

@@ -1,4 +1,4 @@
-function labels = extract_labels(im, num_superpixels)
+function labels = segment(im, num_superpixels)
     desc = seg_descriptors(im, num_superpixels, 5);
     labels = spectral_clustering(desc, 2.3);
     labels = labels-1;
