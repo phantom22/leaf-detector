@@ -7,11 +7,18 @@ function [K,counts] = classify(I,BW,se)
         props = regionprops(labels, 'Area');
         allAreas = [props.Area];
 
+        %disp(allAreas);
+        
         m = sum(allAreas) / (3*numRegions);
+
+        %fprintf("%.2f%\n", m);
 
         if m < 100
             m = 100;
+        elseif m > 1000
+            m = 1000;
         end
+
         [s, idx] = sort(allAreas,'descend');
         numRegions = nnz(s > m);
     end

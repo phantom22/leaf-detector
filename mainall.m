@@ -1,4 +1,4 @@
-%function mainall
+function mainall
 
     close all;
 
@@ -42,14 +42,4 @@
         visualize_classification(classificato);
         visualizzaClassi(classificato), title(gt(i));
     end
-%end
-
-
-
-
-
-%
-%  M/d * N/d = 300 * 400
-%  (M*N)/d^2 = 300*400
-%  (M*N)/(300*400) = d^2
-%  sqrt((M*N)/(300*400)) = d
+end

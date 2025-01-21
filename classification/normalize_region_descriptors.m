@@ -5,7 +5,7 @@ function [data,min_bounds,max_bounds] = normalize_region_descriptors(data, for_t
     end
 
     if ~for_training
-        [min_bounds, max_bounds] = load_leaf_classification_bounds;
+        [~, min_bounds, max_bounds] = load_leaf_classifier;
         data = (data - min_bounds) ./ (max_bounds - min_bounds);
         return;
     end

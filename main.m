@@ -3,13 +3,18 @@ function main
 
     im = im2double(imread("images/Z/4.jpg"));
 
-    im = imresize(im, [300 400]);
+    f = sqrt(size(im,1) * size(im,2) / 120000);
+
+    im = imresize(im, size(im, 1:2) / f);
+
+    %disp(size(im))
 
     se = strel('disk', 5);
     dummy_se = strel('disk', 0);
 
     tic;
     K = segment(im, se);
+
     [C,counts] = classify(im, K, dummy_se);
     toc;
 

@@ -52,6 +52,14 @@ function d = region_descriptors(im, leaf_mask)
     d(19) = homogeneity;
     d(20) = entropy;
 
+    [hist_uniformity, hist_entropy] = stripped_binfeatures(gim, 256, logical(leaf_mask));
+
+    d(21) = hist_uniformity;
+    d(22) = hist_entropy;
+
+    im_area = size(im,1) * size(im,2);
+    d(1:15) = d(1:15) / im_area;
+
     % L5 = [1 4 6 4 1]; 
     % E5 = [-1 -2 0 2 1];
     % S5 = [-1 0 2 0 -1];
