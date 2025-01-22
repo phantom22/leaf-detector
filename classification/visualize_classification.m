@@ -19,4 +19,5 @@ function visualize_classification(C)
 
     timagesc(C); colormap(cmap);
 
+    visualize_classified_labels(C);
 end
