@@ -1,6 +1,6 @@
 function non_bg = regGrow_batch(input_dir)
     arguments
-        input_dir = "images/E";
+        input_dir = "images/D";
     end
     close all;
 
@@ -20,7 +20,7 @@ function non_bg = regGrow_batch(input_dir)
 
         ycbcr = rgb2ycbcr(im);
 
-        non_bg(:,:,k) = rg.segment(ycbcr(:,:,2), [10 10], 0.04, inf, false);
+        non_bg(:,:,k) = rg.segment(ycbcr(:,:,2), [10 10], 0.045, inf, false);
     end
     elapsed = toc;
     fprintf("Elapsed time is %ss (%s per image on average).\n", num2str(elapsed), num2str(elapsed/num_images));

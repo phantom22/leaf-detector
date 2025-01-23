@@ -1,7 +1,7 @@
 function main
     tic;
 
-    im = im2double(imread("images/A/4.jpg"));
+    im = im2double(imread("images/Z/1.jpg"));
 
     f = sqrt(size(im,1) * size(im,2) / 120000);
 
@@ -9,7 +9,7 @@ function main
 
     %disp(size(im))
 
-    se = strel('disk', 5);
+    se = strel('disk', 3);
     dummy_se = strel('disk', 0);
 
     tic;

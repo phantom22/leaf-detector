@@ -40,7 +40,7 @@ function huMoments = hu_moments(image)
     eta12 = mu12 / mu00^(2.5);
 
     % Compute Hu Moments (7 features)
-    huMoments = zeros(1, 7);
+    huMoments = zeros(7,1);
     huMoments(1) = eta20 + eta02;
     huMoments(2) = (eta20 - eta02)^2 + 4*eta11^2;
     huMoments(3) = (eta30 - 3*eta12)^2 + (3*eta21 - eta03)^2;

@@ -1,9 +1,10 @@
 function mainall
 
-    close all;
+    %close all;
 
     gt = {"G","G","G",...
-        "D","D","D","D","D","D",...
+        "D","D","D",...
+        "H","H","H",...
         "E","E","E","E",...
         "I","I","I",...
         "N","N","N",...
@@ -14,19 +15,19 @@ function mainall
         "B","B","B",...
         "C","C","C"};
 
-    [num_images, class_full_paths, ~] = image_paths_from_dir("images/Z");
+    [num_images, class_full_paths, ~] = image_paths_from_dir("images/M");
 
     [m,n] = calcola_ingombro_minimo_subplot(num_images);
 
     dummy_se = strel('disk', 0);
-    se = strel('disk', 3);
+    se = strel('disk', 5);
 
     figure_maximized;
 
     for i=1:num_images
         im = im2double(imread(class_full_paths{i}));
 
-        f = sqrt(size(im,1) * size(im,2) / 120000);
+        f = sqrt(size(im,1) * size(im,2) / (120000));
 
         im = imresize(im, size(im,1:2) / f);
 

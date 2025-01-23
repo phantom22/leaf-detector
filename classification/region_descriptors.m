@@ -18,51 +18,59 @@ function d = region_descriptors(im, leaf_mask)
 
     %mask_nnz = nnz(leaf_mask);
 
+    % s = regionprops(leaf_mask, 'MajorAxisLength', 'MinorAxisLength', ...
+    %     'Area', 'Perimeter', 'Eccentricity', 'Centroid', 'Circularity', ...
+    %     'Solidity', 'ConvexHull', 'ConvexArea');
+
     s = regionprops(leaf_mask, 'MajorAxisLength', 'MinorAxisLength', ...
-        'Area', 'Perimeter', 'Eccentricity', 'Centroid', 'Circularity', ...
-        'Solidity', 'ConvexHull', 'ConvexArea');
+        'Area', 'Perimeter');
 
-    d = zeros(24,1,'single');
+    d = zeros(11,1,'single');
 
-    ConvexPerimeter = cellfun(@(hull) sum(sqrt(sum(diff([hull; hull(1, :)], 1, 1).^2, 2))), {s.ConvexHull});
-    
-    d(1) = s.MajorAxisLength;
-    d(2) = s.MinorAxisLength;
-    d(3) = s.Area;
-    d(4) = s.Perimeter;
-    d(5) = s.MajorAxisLength / s.MinorAxisLength;
-    
-    %d(9) = s.Perimeter^2 / s.Area;
-    d(6) = s.Perimeter / s.MajorAxisLength;
-    d(7) = d(6) / s.MinorAxisLength;
-    d(8) = ConvexPerimeter / s.Perimeter;
-    %d(13) = (s.ConvexArea - s.Area) /  s.Area;
-    %d(14) =  s.Area / s.ConvexArea;
-    %d(15) = sqrt(4 * s.Area / pi);
-    %d(16) = size(s.ConvexHull,1);
+    d(1:7) = hu_moments(leaf_mask);
 
-    d(9) = s.Eccentricity;
-    d(10) = s.Circularity;
-    d(11) = s.Solidity;
-
-    nglcm = normglcm(gim, 256, logical(leaf_mask));
-    [~,~,variance,~,~,~,~,~,contrast,uniformity,homogeneity,entropy] = glcmfeatures(nglcm);
-
-    d(12) = variance;
-    d(13) = contrast;
-    d(14) = uniformity;
-    d(15) = homogeneity;
-    d(16) = entropy;
-
-    [hist_uniformity, ~] = stripped_binfeatures(gim, 256, logical(leaf_mask));
-
-    d(17) = hist_uniformity;
-    %d(22) = hist_entropy;
+    d(8) = s.MajorAxisLength;
+    d(9) = s.MinorAxisLength;
+    d(10) = s.Area;
+    d(11) = s.Perimeter;
 
     im_area = size(im,1) * size(im,2);
-    d(1:8) = d(1:8) / im_area;
+    leaf_area = nnz(leaf_mask);
+    d(8:11) = d(8:11) / (sqrt(leaf_area) * sqrt(im_area));
 
-    d(18:24) = hu_moments(gim);
+    %d = zeros(7,1,'single');
+
+    % ConvexPerimeter = cellfun(@(hull) sum(sqrt(sum(diff([hull; hull(1, :)], 1, 1).^2, 2))), {s.ConvexHull});
+    % 
+    % d(1) = s.MajorAxisLength;
+    % d(2) = s.MinorAxisLength;
+    % d(3) = s.Area;
+    % d(4) = s.Perimeter;
+    % d(5) = s.MajorAxisLength / s.MinorAxisLength;
+    % 
+    % d(6) = s.Perimeter / s.MajorAxisLength;
+    % d(7) = d(6) / s.MinorAxisLength;
+    % d(8) = ConvexPerimeter / s.Perimeter;
+    % 
+    % d(9) = s.Eccentricity;
+    % d(10) = s.Circularity;
+    % d(11) = s.Solidity;
+    % 
+    % nglcm = normglcm(gim, 256, logical(leaf_mask));
+    % [~,~,variance,~,~,~,~,~,contrast,uniformity,homogeneity,entropy] = glcmfeatures(nglcm);
+    % 
+    % d(12) = variance;
+    % d(13) = contrast;
+    % d(14) = uniformity;
+    % d(15) = homogeneity;
+    % d(16) = entropy;
+    % 
+    % [hist_uniformity, ~] = stripped_binfeatures(gim, 256, logical(leaf_mask));
+
+    %d(17) = hist_uniformity;
+
+    %im_area = size(im,1) * size(im,2);
+    %d(1:8) = d(1:8) / im_area;
 
     % L5 = [1 4 6 4 1]; 
     % E5 = [-1 -2 0 2 1];

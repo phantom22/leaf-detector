@@ -17,7 +17,7 @@ function visualize_classification(C)
 
     cmap(1,:) = cmap(1,:) .* 0.4;
 
-    timagesc(C); colormap(cmap);
+    imagesc(C); axis image; axis off; colormap(gca, cmap(1:max(max(C))+1, :));
 
     visualize_classified_labels(C);
 end

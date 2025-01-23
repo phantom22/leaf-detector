@@ -61,5 +61,5 @@ function [data,min_bounds,max_bounds] = prepare_classification_data(class_folder
         end
         fprintf("'%s' done \n", class_folders(i));
     end
-    [data,min_bounds,max_bounds] = normalize_region_descriptors(data, true, 18:24);
+    [data,min_bounds,max_bounds] = normalize_region_descriptors(data, true, 1:7);
 end
