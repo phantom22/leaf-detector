@@ -15,7 +15,7 @@ function mainall
         "B","B","B",...
         "C","C","C"};
 
-    [num_images, class_full_paths, ~] = image_paths_from_dir("images/M");
+    [num_images, class_full_paths, ~] = image_paths_from_dir("images/Z");
 
     [m,n] = calcola_ingombro_minimo_subplot(num_images);
 

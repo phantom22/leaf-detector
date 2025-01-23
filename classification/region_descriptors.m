@@ -3,6 +3,8 @@ function d = region_descriptors(im, leaf_mask)
         im = im2single(im);
     end
 
+
+
     inv_mask = 1 - leaf_mask;
     L = bwlabel(inv_mask);
 
@@ -22,8 +24,12 @@ function d = region_descriptors(im, leaf_mask)
     %     'Area', 'Perimeter', 'Eccentricity', 'Centroid', 'Circularity', ...
     %     'Solidity', 'ConvexHull', 'ConvexArea');
 
-    s = regionprops(leaf_mask, 'MajorAxisLength', 'MinorAxisLength', ...
+    s = regionprops(leaf_mask,"Centroid","Orientation", 'MajorAxisLength', 'MinorAxisLength', ...
         'Area', 'Perimeter');
+    [gim,leaf_mask]=sistemaImmagine(gim,leaf_mask,s.Orientation,s.Centroid);
+    s = regionprops(leaf_mask,"Centroid","Orientation", 'MajorAxisLength', 'MinorAxisLength', ...
+        'Area', 'Perimeter');
+
 
     d = zeros(11,1,'single');
 
@@ -36,7 +42,7 @@ function d = region_descriptors(im, leaf_mask)
 
     im_area = size(im,1) * size(im,2);
     leaf_area = nnz(leaf_mask);
-    d(8:11) = d(8:11) / (sqrt(leaf_area) * sqrt(im_area));
+    d(8:11) = d(8:11) / sqrt(leaf_area) ;
 
     %d = zeros(7,1,'single');
 

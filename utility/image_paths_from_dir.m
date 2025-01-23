@@ -52,8 +52,16 @@ end
     end
 
     if ordered_numbers_as_names
-        names = 1:num_images;
-        names = arrayfun(@(x) char(strcat(num2str(x), '.', extension)), names, 'UniformOutput', false);
+        names= {};
+        i=1;
+        while length(names)<num_images
+            if exist(fullfile(directory,strcat(num2str(i), '.', extension)),"file")
+                names{end+1}=strcat(num2str(i), '.', extension);
+            end
+            i=i+1;
+        end
+        % names = 1:num_images;
+        % names = arrayfun(@(x) char(strcat(num2str(x), '.', extension)), names, 'UniformOutput', false);
     else
         names = {files.name}; % Extract file names into a cell array
     end
