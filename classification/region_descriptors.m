@@ -22,7 +22,7 @@ function d = region_descriptors(im, leaf_mask)
         'Area', 'Perimeter', 'Eccentricity', 'Centroid', 'Circularity', ...
         'Solidity', 'ConvexHull', 'ConvexArea');
 
-    d = zeros(17,1,'single');
+    d = zeros(24,1,'single');
 
     ConvexPerimeter = cellfun(@(hull) sum(sqrt(sum(diff([hull; hull(1, :)], 1, 1).^2, 2))), {s.ConvexHull});
     
@@ -61,6 +61,8 @@ function d = region_descriptors(im, leaf_mask)
 
     im_area = size(im,1) * size(im,2);
     d(1:8) = d(1:8) / im_area;
+
+    d(18:24) = hu_moments(gim);
 
     % L5 = [1 4 6 4 1]; 
     % E5 = [-1 -2 0 2 1];

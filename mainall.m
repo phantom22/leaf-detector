@@ -19,7 +19,7 @@ function mainall
     [m,n] = calcola_ingombro_minimo_subplot(num_images);
 
     dummy_se = strel('disk', 0);
-    se = strel('disk', 5);
+    se = strel('disk', 3);
 
     figure_maximized;
 
