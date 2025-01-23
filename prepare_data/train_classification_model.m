@@ -32,14 +32,19 @@ function train_classification_model(model_name, standardize)
     
     save(target_file, 'leaf_classifier', 'min_bounds', 'max_bounds');
 
-    if ~ismember(input('reset workspace? (Y/N): ', 's'), {'Y', 'y'})
+    if ~ismember(input('load new model into workspace? (Y/N): ', 's'), {'Y', 'y'})
         disp('didn''t remove old models from workspace.');
         return;
     else
         reset_workspace;
+        load_leaf_classifier;
     end
 
-    if ismember(input('change current working classifier model in "models/current_model.txt"? (Y/N): ', 's'), {'Y', 'y'})
+    fileID = fopen('models/current_classifier_model.txt', 'r');
+    current_model = fgetl(fileID);
+    fclose(fileID);
+
+    if current_model ~= target_file && ismember(input('change current working classifier model in "models/current_model.txt"? (Y/N): ', 's'), {'Y', 'y'})
         fileID = fopen('models/current_classifier_model.txt', 'w'); % 'w' means write mode
         fprintf(fileID, '%s', target_file);
         fclose(fileID);
