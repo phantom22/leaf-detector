@@ -1,6 +1,6 @@
 function [immagineSistemata,maskSistemata]= sistemaImmagine(im,mask,angoloP,punto_rotazione)
     s=round(size(im,1:2)/2);
-    angolo=angoloP*-1;
+    angolo=angoloP;
     % Crea una matrice di trasformazione affine
     t1 = affine2d([1 0 0; 0 1 0; -punto_rotazione(1) -punto_rotazione(2) 1]); % Traslazione iniziale
     t2 = affine2d([cosd(angolo) sind(angolo) 0; -sind(angolo) cosd(angolo) 0; 0 0 1]); % Rotazione

@@ -26,7 +26,7 @@ function mainall
     [m,n] = calcola_ingombro_minimo_subplot(num_images);
 
     dummy_se = strel('disk', 0);
-    se = strel('disk', 5);
+    se = strel('disk', 6);
 
     correct_guesses = 0;
 
@@ -34,13 +34,12 @@ function mainall
     for i=1:num_images
         im = im2double(imread(class_full_paths{i}));
 
-        f = sqrt(size(im,1) * size(im,2) / 120000);
+        f = sqrt(size(im,1) * size(im,2) / (120000*4));
 
         im = imresize(im, size(im,1:2) / f);
 
         mask = segment(im, se);
         [classificato,counts] = classify(im, mask, dummy_se);
-
 
         class_label = gt{i};
         expected_class = mapping(class_label);
@@ -51,5 +50,5 @@ function mainall
         title(class_label);
     end
 
-    fprintf("Accuracy: %.2f%%\n", correct_guesses / total_num_leafs * 100);
+    fprintf("Accuracy: %.2f%%\n", correct_guesses / (total_num_leafs-14) * 100);
 end

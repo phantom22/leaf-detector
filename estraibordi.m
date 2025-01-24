@@ -1,19 +1,12 @@
+im = "A\10.jpg";
+img = im2single(imread("images/" + im));
+gt = im2single(imread("images/ground_truth/" + im));
 
-img = im2double( imread("images\segmented\A\10.png"));
-% Carica l'immagine
+HSV = rgb2hsv(img);
 
-% Converti in scala di grigi
-grayImg = rgb2gray(img);
+[strong,weak,canny] = extract_edges(HSV(:,:,3) .* gt);
 
-% Migliora il contrasto con equalizzazione dell'istogramma
-enhancedImg = histeq(grayImg);
-
-% Rileva i bordi usando il metodo di Canny con soglie personalizzate
-lowThreshold = 0.0;  % Soglia bassa
-highThreshold = 0.2; % Soglia alta
-edges = edge(enhancedImg, 'Canny', [lowThreshold, highThreshold]);
-
-% Visualizza il risultato
-figure;
-imshow(edges);
-title('Venature della foglia (Bordi rilevati)');
+figure_maximized;
+tsubplot(1,3,1); timagesc(strong);
+tsubplot(1,3,2); timagesc(weak);
+tsubplot(1,3,3); timagesc(canny);

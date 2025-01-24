@@ -15,6 +15,9 @@ function main
     tic;
     K = segment(im, se);
 
+    %disp(hu_moments(K));
+    %disp(feature_vec(K));
+
     [C,counts] = classify(im, K, dummy_se);
     toc;
 
