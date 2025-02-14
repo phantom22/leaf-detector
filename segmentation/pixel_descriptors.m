@@ -38,12 +38,8 @@ function d = pixel_descriptors(im)
     d(:,:,15) = conv2(R5,R5,pim,'valid');
 
     gabormag = imgaborfilt(im(:,:,3), gabor_filters);
-
-    for i = 1:12
-        gabormag(:,:,i) = imgaussfilt(gabormag(:,:,i), gabor_sigmas(i));
-    end
-
-    d(:,:,16:27) = gabormag(:,:,1:12);
+    gabormag = arrayfun(@(i) imgaussfilt(gabormag(:,:,i), gabor_sigmas(i)), 1:12, 'UniformOutput', false);
+    d(:,:,16:27) = cat(3, gabormag{:});
 
     d = reshape(d, [], 27);
 end

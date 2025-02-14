@@ -25,10 +25,10 @@ function [data,min_bounds,max_bounds] = prepare_classification_data(class_folder
         for k=1:num_images
             if num_classes == 1
                 im_path = class_full_paths{k};
-                gt_path = gt_full_paths{k};
+                %gt_path = gt_full_paths{k};
             else
                 im_path = class_full_paths{i}{k};
-                gt_path = gt_full_paths{i}{k};
+                %gt_path = gt_full_paths{i}{k};
             end
 
             im = im2single(imread(im_path));

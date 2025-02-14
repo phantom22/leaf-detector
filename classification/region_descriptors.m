@@ -28,7 +28,7 @@ function d = region_descriptors(im, leaf_mask)
 
     %area = nnz(gim);
 
-    d(1:7) = hu_moments(leaf_mask);
+    d(1:7) = py_hu_moments(leaf_mask);
 
     % extract_edges maybe should return the masks
     %[strong,weak,~] = extract_edges(HSV(:,:,3));
