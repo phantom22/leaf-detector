@@ -22,7 +22,7 @@ function [data,min_bounds,max_bounds] = normalize_region_descriptors(data, for_t
         max_bounds(cind) = 1;
     end
 
-    to_fix = min_bounds == max_bounds & min_bounds == 0;
+    to_fix = min_bounds == max_bounds;
 
     min_bounds(to_fix) = 0;
     max_bounds(to_fix) = 1;
