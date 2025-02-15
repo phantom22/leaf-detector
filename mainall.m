@@ -57,7 +57,8 @@ function mainall(target)
 
         tsubplot(m,n,i);
         visualize_classification(classificato);
-        timshow(mask);
+        % timshow(mask);
+
         title(gt_labels{i});
     end
 
