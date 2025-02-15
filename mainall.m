@@ -1,6 +1,7 @@
-function mainall(target)
+function mainall(target, just_segmentation)
     arguments
         target = "images/test3";
+        just_segmentation = false;
     end
     %close all;
 
@@ -38,26 +39,29 @@ function mainall(target)
     [m,n] = calcola_ingombro_minimo_subplot(num_images);
 
     dummy_se = strel('disk', 0);
-    se = strel('disk', 0);
+    se = strel('disk', 5);
 
     correct_guesses = 0;
 
     tic;
 
-    figure_maximized(target);
+    figure_maximized(get_current_model('segmentation') + " " + target);
     for i=1:num_images
         im = imresizetoarea(im2double(imread(class_full_paths{i})), 120000);
 
         mask = segment(im, se);
 
-        [classificato,counts] = classify(im, mask, dummy_se);
-        class_label = gt_labels{i};
-        expected_class = mapping(class_label);
-        correct_guesses = correct_guesses + counts(expected_class);
-
         tsubplot(m,n,i);
-        visualize_classification(classificato);
-        % timshow(mask);
+        if ~just_segmentation
+            [classificato,counts] = classify(im, mask, dummy_se);
+            class_label = gt_labels{i};
+            expected_class = mapping(class_label);
+            correct_guesses = correct_guesses + counts(expected_class);
+    
+            visualize_classification(classificato);
+        else
+            timshow(mask);
+        end
 
         title(gt_labels{i});
     end

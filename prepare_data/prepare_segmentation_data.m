@@ -1,4 +1,9 @@
-function data = prepare_segmentation_data
+function data = prepare_segmentation_data(noise_strength)
+    arguments
+        noise_strength = 0;
+    end
+
+    fprintf("noise_strength: %.2f%%\n", noise_strength * 100);
 
     targets = ["A","B","C","D","E","F","G","H","I","L","M","N"];
     
@@ -46,7 +51,7 @@ function data = prepare_segmentation_data
     data_without_labels = data(:,1:end-1);
 
     data_avg = sum(data_without_labels) / size(data,1);
-    noise_strength = 0.15; % 5 percent
+    noise_strength = 0.1; % 5 percent
     noise = ((single(-1) + single(2)*rand(size(data,1), size(data,2)-1,'single')) .* noise_strength) .* data_avg;
 
     data(:,1:end-1) = data_without_labels + noise;

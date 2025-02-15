@@ -1,9 +1,12 @@
-function [data,min_bounds,max_bounds] = prepare_classification_data(class_folders)
+function [data,min_bounds,max_bounds] = prepare_classification_data(noise_strength)
     arguments
-        class_folders {mustBeText} = ["A","B","C","D","E","F","G","H","I","L","M","N"];
+        noise_strength = 0;
     end
+
+    fprintf("noise_strength: %.2f%%\n", noise_strength * 100);
+
+    class_folders = ["A","B","C","D","E","F","G","H","I","L","M","N"];
     
-    close all;
     num_classes = length(class_folders);
     
     % ["images\A", "images\B", ...]
@@ -61,5 +64,13 @@ function [data,min_bounds,max_bounds] = prepare_classification_data(class_folder
         end
         fprintf("'%s' done \n", class_folders(i));
     end
+
+    data_without_labels = data(:,1:end-1);
+
+    data_avg = sum(data_without_labels) / size(data,1);
+    noise = ((single(-1) + single(2)*rand(size(data,1), size(data,2)-1,'single')) .* noise_strength) .* data_avg;
+
+    data(:,1:end-1) = data_without_labels + noise;
+
     [data,min_bounds,max_bounds] = normalize_region_descriptors(data, true, 1:7);
 end
