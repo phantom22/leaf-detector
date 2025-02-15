@@ -13,6 +13,7 @@ function visualize_classification(C)
         hex2rgb('#4d4dff'); % blue
         hex2rgb('#794dff'); % purple
         hex2rgb('#ff4d79'); % magenta
+        hex2rgb('#ff33ff'); % strong magenta
     ] .* 0.7;
 
     cmap(1,:) = cmap(1,:) .* 0.4;

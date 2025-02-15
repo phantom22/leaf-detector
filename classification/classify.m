@@ -24,7 +24,7 @@ function [K,counts] = classify(I,BW,se)
     end
 
     K = zeros(size(BW),'uint8');
-    counts = zeros(12,1,'double');
+    counts = zeros(13,1,'double');
 
     for i=1:numRegions
         full_mask = labels == idx(i);
@@ -33,7 +33,15 @@ function [K,counts] = classify(I,BW,se)
         data = double(region_descriptors(I, mask))';
         ndata = normalize_region_descriptors(data);
 
-        C = leaf_classifier.predict(ndata);
+        [C,~] = leaf_classifier.predict(ndata);
+
+        %conf = soft_max(margins);
+
+        %v = soft_max(margins) > 0.16;
+
+        %if nnz(v) == 0
+        %    C = 13;
+        %end
 
         CMASK = full_mask * C;
 

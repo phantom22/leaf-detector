@@ -1,9 +1,10 @@
 cv2 = py.importlib.import_module("cv2");
 np = py.importlib.import_module("numpy");
 
+
 image = cv2.imread('images/ground_truth/A/1.jpg', cv2.IMREAD_GRAYSCALE);
 
-if image == py.NoneType
+if image == py.None
     error("Error: Could not load image.");
 end
 

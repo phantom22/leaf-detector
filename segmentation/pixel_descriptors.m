@@ -8,7 +8,7 @@ function d = pixel_descriptors(im)
     d = zeros(size(im,1),size(im,2),27,'single');
 
     hsvim = rgb2hsv(im);
-    gim = hsvim(:,:,3);
+    gim = imgaussfilt(hsvim(:,:,3), 1.5);
     ycbcrim = rgb2ycbcr(im);
     labim = rgb2lab(im);
     [sobel,sobel_dir] = mysobel(gim, 1/2);

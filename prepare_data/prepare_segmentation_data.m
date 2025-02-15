@@ -41,5 +41,13 @@ function data = prepare_segmentation_data
         fprintf("'%s' done (elapsed: %.0fs, ETA: %.0fs).\n", targets(t), round(elapsed), abs(round(elapsed/(i-1)*(total_image_count - i + 1))));
     end
     
-    data = reshape(udata,[],28);
+    data = reshape(udata, [], 28);
+
+    data_without_labels = data(:,1:end-1);
+
+    data_avg = sum(data_without_labels) / size(data,1);
+    noise_strength = 0.15; % 5 percent
+    noise = ((single(-1) + single(2)*rand(size(data,1), size(data,2)-1,'single')) .* noise_strength) .* data_avg;
+
+    data(:,1:end-1) = data_without_labels + noise;
 end

@@ -1,5 +1,5 @@
 function visualize_classified_labels(classificato)
-    class_folders = ["A","B","C","D","E","F","G","H","I","L","M","N"];
+    class_folders = ["A","B","C","D","E","F","G","H","I","L","M","N","Unknown"];
     [labels, numRegions] = bwlabel(classificato~=0);
     for i=1:numRegions
         maskF = uint8(labels==i);
