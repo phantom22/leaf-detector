@@ -1,11 +1,12 @@
-function mainall(target, just_segmentation)
+function acc = mainall(target, just_segmentation, display)
     arguments
         target = "images/test3";
         just_segmentation = false;
+        display = true;
     end
     %close all;
 
-    option_mapping = containers.Map(["images/Z","images/test3","images/test2","images/A","images/B","images/C","images/D","images/E","images/F","images/G","images/H","images/I","images/L","images/M","images/N",], [1 2 2 3 3 3 3 3 3 3 3 3 3 3 3]);
+    option_mapping = containers.Map(["images/Z","images/test3","images/test2","images/A","images/B","images/C","images/D","images/E","images/F","images/G","images/H","images/I","images/L","images/M","images/N"], [1 2 2 3 3 3 3 3 3 3 3 3 3 3 3]);
 
     option = option_mapping(target);
 
@@ -36,37 +37,53 @@ function mainall(target, just_segmentation)
 
     total_num_leafs = sum(gt_count);
 
-    [m,n] = calcola_ingombro_minimo_subplot(num_images);
-
     dummy_se = strel('disk', 0);
-    se = strel('disk', 5);
+    se = strel('disk', 3);
 
     correct_guesses = 0;
 
+    if option == 2
+        num_images = num_images - 7;
+    end
+
+    [m,n] = calcola_ingombro_minimo_subplot(num_images);
+
     tic;
 
-    figure_maximized(get_current_model('segmentation') + " " + target);
+    if display
+        figure_maximized(get_current_model('segmentation') + " " + target);
+    end
+
     for i=1:num_images
         im = imresizetoarea(im2double(imread(class_full_paths{i})), 120000);
 
         mask = segment(im, se);
 
-        tsubplot(m,n,i);
+        if display
+            tsubplot(m,n,i);
+        end
+
         if ~just_segmentation
             [classificato,counts] = classify(im, mask, dummy_se);
             class_label = gt_labels{i};
             expected_class = mapping(class_label);
             correct_guesses = correct_guesses + counts(expected_class);
     
-            visualize_classification(classificato);
-        else
+            if display
+                visualize_classification(classificato);
+            end
+        elseif display
             timshow(mask);
         end
 
-        title(gt_labels{i});
+        if display
+            title(gt_labels{i});
+        end
     end
 
     toc;
 
-    fprintf("Accuracy: %.2f%%\n", correct_guesses / (total_num_leafs) * 100);
+    acc = correct_guesses / total_num_leafs;
+
+    fprintf("[%s] Accuracy: %.2f%%\n", target, acc * 100);
 end
