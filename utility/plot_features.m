@@ -1,4 +1,11 @@
-function plot_features(data, labels, data_labels)
+function plot_features(data, labels, data_labels, window_title)
+    arguments
+        data 
+        labels 
+        data_labels 
+        window_title = "";
+    end
+
     unique_labels = unique(labels);
     colors = lines(length(unique_labels));
 
@@ -6,7 +13,7 @@ function plot_features(data, labels, data_labels)
     
     [m,n] = calcola_ingombro_minimo_subplot(num_features);
 
-    figure_maximized;
+    figure_maximized(window_title);
     for f=1:num_features
         % Plot dei dati
         tsubplot(m,n,f);
@@ -24,8 +31,8 @@ function plot_features(data, labels, data_labels)
         dcm = datacursormode(gcf);
         datacursormode on;
         set(dcm, 'UpdateFcn', @(obj, event_obj) simpleTooltip(event_obj));
-
-        title(data_labels{f});
+        label = data_labels{f}(1);
+        title(label);
     end
 end
 
