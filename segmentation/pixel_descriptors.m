@@ -5,41 +5,29 @@ function d = pixel_descriptors(im)
 
     load('segmentation/gabordata.mat','gabor_filters','gabor_sigmas');
 
-    d = zeros(size(im,1),size(im,2),27,'single');
+    d = zeros(size(im,1),size(im,2),10,'single');
 
     hsvim = rgb2hsv(im);
     gim = imgaussfilt(hsvim(:,:,3), 1.5);
     ycbcrim = rgb2ycbcr(im);
     labim = rgb2lab(im);
-    [sobel,sobel_dir] = mysobel(gim, 1/2);
+    [~,sobel_dir] = mysobel(gim, 1/2);
 
-    L5 = [1 4 6 4 1]; 
-    E5 = [-1 -2 0 2 1];
-    S5 = [-1 0 2 0 -1];
-    R5 = [1 -4 6 -4 1];
-    pim = padarray(gim, [2,2], 'symmetric', 'both');
-
-    d(:,:,1) = hsvim(:,:,2); % s
+    d(:,:,1) = min(max(hsvim(:,:,1), 0), 1); % h
     d(:,:,2) = ycbcrim(:,:,2); % cb
-    %descriptors(:,:,3) = ycbcrim(:,:,3); % cr
-    d(:,:,3) = labim(:,:,1); % l
-    d(:,:,4) = labim(:,:,2); % a
-    %descriptors(:,:,5) = labim(:,:,3); % b
-    d(:,:,5) = sobel;
-    d(:,:,6) = sobel_dir;
-    d(:,:,7) = conv2(L5,L5,pim,'valid');
-    d(:,:,8) = conv2(L5,E5,pim,'valid');
-    d(:,:,9) = conv2(L5,S5,pim,'valid');
-    d(:,:,10) = conv2(L5,R5,pim,'valid');
-    d(:,:,11) = conv2(E5,E5,pim,'valid');
-    d(:,:,12) = conv2(E5,S5,pim,'valid');
-    d(:,:,13) = conv2(E5,R5,pim,'valid');
-    d(:,:,14) = conv2(S5,S5,pim,'valid');
-    d(:,:,15) = conv2(R5,R5,pim,'valid');
+    d(:,:,3) = ycbcrim(:,:,3); % cr
+    d(:,:,4) = labim(:,:,1); % l
+    d(:,:,5) = labim(:,:,2); % a
+    d(:,:,6) = labim(:,:,3); % b
+    d(:,:,7) = sobel_dir;
 
     gabormag = imgaborfilt(im(:,:,3), gabor_filters);
-    gabormag = arrayfun(@(i) imgaussfilt(gabormag(:,:,i), gabor_sigmas(i)), 1:12, 'UniformOutput', false);
-    d(:,:,16:27) = cat(3, gabormag{:});
+    gabormag = arrayfun(@(i) imgaussfilt(gabormag(:,:,i), gabor_sigmas(i)), 1:24, 'UniformOutput', false);
+    gabormag = cat(3, gabormag{:});
 
-    d = reshape(d, [], 27);
+    d(:,:,8) = gabormag(:,:,1)+gabormag(:,:,4)+gabormag(:,:,7)+gabormag(:,:,10)+gabormag(:,:,13)+gabormag(:,:,16)+gabormag(:,:,19)+gabormag(:,:,22);
+    d(:,:,9) = gabormag(:,:,2)+gabormag(:,:,5)+gabormag(:,:,8)+gabormag(:,:,11)+gabormag(:,:,14)+gabormag(:,:,17)+gabormag(:,:,20)+gabormag(:,:,23);
+    d(:,:,10) = gabormag(:,:,3)+gabormag(:,:,6)+gabormag(:,:,9)+gabormag(:,:,12)+gabormag(:,:,15)+gabormag(:,:,18)+gabormag(:,:,21)+gabormag(:,:,24);
+
+    d = reshape(d, [], 10);
 end

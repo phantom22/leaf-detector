@@ -31,7 +31,7 @@ function plot_features(data, labels, data_labels, window_title)
         dcm = datacursormode(gcf);
         datacursormode on;
         set(dcm, 'UpdateFcn', @(obj, event_obj) simpleTooltip(event_obj));
-        label = data_labels{f}(1);
+        label = string(data_labels{f});
         title(label);
     end
 end
