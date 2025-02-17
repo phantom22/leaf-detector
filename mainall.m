@@ -6,7 +6,7 @@ function acc = mainall(target, just_segmentation, display)
     end
     %close all;
 
-    option_mapping = containers.Map(["images/Z","images/test3","images/test2","images/A","images/B","images/C","images/D","images/E","images/F","images/G","images/H","images/I","images/L","images/M","images/N"], [1 2 2 3 3 3 3 3 3 3 3 3 3 3 3]);
+    option_mapping = containers.Map(["images/Z","images/test3","images/test2","images/test4","images/A","images/B","images/C","images/D","images/E","images/F","images/G","images/H","images/I","images/L","images/M","images/N"], [1 2 2 3 4 4 4 4 4 4 4 4 4 4 4 4]);
 
     option = option_mapping(target);
 
@@ -18,12 +18,16 @@ function acc = mainall(target, just_segmentation, display)
         { ...
             {"C","C","C","C","C","N","N","N","N","N","N","D","D","D","D","D","L","L","L","L","L","L","G","G","G","G","M","M","M","M","M","M","H","H","H","H","F","F","F","F","F","F","F","H","H","H"}, ...
             [5 5 5 5 5 5 5 5 4 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 4 5 5 5 5 5 5 5] ...
+        }, ...
+        { ...
+            {"A","A","A","I","I","I","I","B","B","B","B","B","E","E","E","E"}, ...
+            [5 5 5 5 5 5 5 5 5 5 5 4 5 5 5 5] ...
         } ...
     };
 
     [num_images, class_full_paths, ~] = image_paths_from_dir(target);
 
-    if option == 3
+    if option == 4
         splits = strsplit(target, '/');
         class_label = string(splits{end});
         gt_labels = repmat(class_label, 1, num_images);
