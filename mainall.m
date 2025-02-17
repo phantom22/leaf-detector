@@ -11,15 +11,15 @@ function acc = mainall(target, just_segmentation, display)
     option = option_mapping(target);
 
     options = { ...
-        { ...
+        { ... % Z
             {"G","G","G","D","D","D","H","H","H","E","E","E","E","I","I","I","N","N","N","L","L","L","M","M","M","M","F","F","A","A","A","B","B","B","C","C","C"}, ...
             [5 4 5 5 5 5 6 5 7 6 6 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 4 5 5 4 5 5 5 5 5 6] ...
         }, ...
-        { ...
+        { ... % test2/test3
             {"C","C","C","C","C","N","N","N","N","N","N","D","D","D","D","D","L","L","L","L","L","L","G","G","G","G","M","M","M","M","M","M","H","H","H","H","F","F","F","F","F","F","F","H","H","H"}, ...
             [5 5 5 5 5 5 5 5 4 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 4 5 5 5 5 5 5 5] ...
         }, ...
-        { ...
+        { ... % test4
             {"A","A","A","I","I","I","I","B","B","B","B","B","E","E","E","E"}, ...
             [5 5 5 5 5 5 5 5 5 5 5 4 5 5 5 5] ...
         } ...
@@ -35,6 +35,10 @@ function acc = mainall(target, just_segmentation, display)
     else
         gt_labels = options{option}{1};
         gt_count = options{option}{2};
+
+        if target == "test3"
+            num_images = num_images - 7;
+        end
     end
 
     mapping = containers.Map(["A","B","C","D","E","F","G","H","I","L","M","N","Unknown"], [1 2 3 4 5 6 7 8 9 10 11 12 13]);
@@ -42,13 +46,9 @@ function acc = mainall(target, just_segmentation, display)
     total_num_leafs = sum(gt_count);
 
     dummy_se = strel('disk', 0);
-    se = strel('disk', 3);
+    se = strel('disk', 5);
 
     correct_guesses = 0;
-
-    if option == 2
-        num_images = num_images - 7;
-    end
 
     [m,n] = calcola_ingombro_minimo_subplot(num_images);
 
@@ -59,7 +59,7 @@ function acc = mainall(target, just_segmentation, display)
     end
 
     for i=1:num_images
-        im = imresizetoarea(im2double(imread(class_full_paths{i})), 120000);
+        im = imresizetoarea(im2double(imread(class_full_paths{i})), 120000*1.2);
 
         mask = segment(im, se);
 
