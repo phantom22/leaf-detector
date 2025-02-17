@@ -1,5 +1,6 @@
 function visualize_pixel_descriptors(im_path)
     im = imresizetoarea(im2single(imread(im_path)), 300*400);
+    im = whitebalance(im);
 
     tic;
     C = pixel_descriptors(im);

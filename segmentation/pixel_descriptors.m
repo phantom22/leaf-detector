@@ -1,3 +1,5 @@
+% models/segmentation/wb-360gabor-10_pct_noise_10f-sat-pixel-classifier.mat
+
 function d = pixel_descriptors(im)
     if ~isa(im,'single')
         im = im2single(im);
