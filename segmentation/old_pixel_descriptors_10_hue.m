@@ -1,3 +1,5 @@
+% models/segmentation/wb-360gabor-10_pct_noise_10f-pixel-classifier.mat
+
 function d = pixel_descriptors(im)
     if ~isa(im,'single')
         im = im2single(im);
@@ -11,15 +13,14 @@ function d = pixel_descriptors(im)
     gim = imgaussfilt(hsvim(:,:,3), 1.5);
     ycbcrim = rgb2ycbcr(im);
     labim = rgb2lab(im);
-    [sobel,sobel_dir] = mysobel(gim, 1/2);
-    lap = mylaplacian(gim);
+    [~,sobel_dir] = mysobel(gim, 1/2);
 
-    d(:,:,1) = min(max(hsvim(:,:,2), 0), 1); % s
+    d(:,:,1) = min(max(hsvim(:,:,1), 0), 1); % h
     d(:,:,2) = ycbcrim(:,:,2); % cb
     d(:,:,3) = ycbcrim(:,:,3); % cr
-    d(:,:,4) = labim(:,:,2); % a
-    d(:,:,5) = labim(:,:,3); % b
-    d(:,:,6) = sobel + lap; % similar to L
+    d(:,:,4) = labim(:,:,1); % l
+    d(:,:,5) = labim(:,:,2); % a
+    d(:,:,6) = labim(:,:,3); % b
     d(:,:,7) = sobel_dir;
 
     gabormag = imgaborfilt(im(:,:,3), gabor_filters);
