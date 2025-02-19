@@ -35,15 +35,24 @@ function [K,counts] = classify(I,BW,se)
         data = region_descriptors(I, mask)';
         ndata = normalize_region_descriptors(data);
 
-        [C,~] = leaf_classifier.predict(ndata);
+        [C,margins] = leaf_classifier.predict(ndata);
 
-        %conf = soft_max(margins);
+        conf = soft_max(margins)
 
-        %v = soft_max(margins) > 0.16;
+        no_strong_conf = nnz(conf > 0.1667) == 0; % 2/12
+        sorted_conf = sort(conf, 'descend');
 
-        %if nnz(v) == 0
-        %    C = 13;
-        %end
+        top_diff = sorted_conf(1) - sorted_conf(2)
+
+        no_strong_lead = top_diff < 0.0207; % 1/(12*4)
+
+        tie_lead = top_diff < 0.0139; % 1/(12*6)
+
+        disp([no_strong_lead, no_strong_conf, tie_lead])
+
+        if no_strong_conf && no_strong_lead || tie_lead % no_strong_conf for [0.0709 0.0834 0.0457 0.0988 0.0890 0.0482 0.0874 0.0823 0.1104 0.0420 0.0857]
+            C = 13;
+        end
 
         CMASK = full_mask * C;
 
