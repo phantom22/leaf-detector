@@ -1,4 +1,4 @@
-function data = train_classification_model(model_name, noise, standardize, data, min_bounds, max_bounds)
+function [data,min_bounds,max_bounds] = train_classification_model(model_name, noise, standardize, data, min_bounds, max_bounds)
     arguments
         model_name {mustBeTextScalar};
         noise = 0;
