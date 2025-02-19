@@ -55,11 +55,11 @@ function acc = mainall(target, just_segmentation, display)
     tic;
 
     if display
-        figure_maximized(get_current_model('segmentation') + " " + target);
+        figure_maximized(target);
     end
 
     ignore_area = 300*400;
-    target_area = ignore_area;
+    target_area = ignore_area*4;
 
     for i=1:num_images
         im = imresizetoarea(im2double(imread(class_full_paths{i})), target_area, ignore_area);
