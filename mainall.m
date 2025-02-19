@@ -36,9 +36,9 @@ function acc = mainall(target, just_segmentation, display)
         gt_labels = options{option}{1};
         gt_count = options{option}{2};
 
-        if target == "test3"
-            num_images = num_images - 7;
-        end
+        % if target == "images/test3"
+        %     num_images = num_images - 7;
+        % end
     end
 
     mapping = containers.Map(["A","B","C","D","E","F","G","H","I","L","M","N","Unknown"], [1 2 3 4 5 6 7 8 9 10 11 12 13]);
@@ -46,7 +46,7 @@ function acc = mainall(target, just_segmentation, display)
     total_num_leafs = sum(gt_count);
 
     dummy_se = strel('disk', 0);
-    se = strel('disk', 5);
+    se = strel('disk', 3);
 
     correct_guesses = 0;
 
@@ -58,8 +58,11 @@ function acc = mainall(target, just_segmentation, display)
         figure_maximized(get_current_model('segmentation') + " " + target);
     end
 
+    ignore_area = 300*400;
+    target_area = ignore_area;
+
     for i=1:num_images
-        im = imresizetoarea(im2double(imread(class_full_paths{i})), 120000*1.2);
+        im = imresizetoarea(im2double(imread(class_full_paths{i})), target_area, ignore_area);
 
         mask = segment(im, se);
 
@@ -83,6 +86,8 @@ function acc = mainall(target, just_segmentation, display)
         if display
             title(gt_labels{i});
         end
+
+        fprintf("'%s': %d/%d.\n", target, i, num_images);
     end
 
     toc;

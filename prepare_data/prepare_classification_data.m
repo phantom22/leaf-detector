@@ -49,7 +49,7 @@ function [data,min_bounds,max_bounds] = prepare_classification_data(noise_streng
                 K = (labeledImage == maxIndex);
             end
 
-            im = whitebalance(im);
+            %im = whitebalance(im);
 
             if pos == 1
                 v = region_descriptors(im, K);
@@ -76,5 +76,5 @@ function [data,min_bounds,max_bounds] = prepare_classification_data(noise_streng
         data(:,1:end-1) = data_without_labels + noise;
     end
 
-    [data,min_bounds,max_bounds] = normalize_region_descriptors(data, true, []);
+    [data,min_bounds,max_bounds] = normalize_region_descriptors(data, true, 33:39);
 end

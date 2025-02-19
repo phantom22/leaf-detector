@@ -11,39 +11,47 @@ function d = region_descriptors(im, leaf_mask)
     [~, largestRegionIdx] = max([s.Area]);
     bg_mask = L == largestRegionIdx;
 
-    leaf_mask = single(1 - bg_mask);
+    leaf_mask = logical(1 - bg_mask);
 
-    %masked = im .* leaf_mask;
-    %HSV = rgb2hsv(masked);
+    % s = regionprops(leaf_mask, 'MajorAxisLength', 'MinorAxisLength', ...
+    %     'Area', 'Perimeter', 'Eccentricity', 'Solidity');
 
-    s = regionprops(leaf_mask, 'MajorAxisLength', 'MinorAxisLength', ...
-        'Area', 'Perimeter', 'Eccentricity', 'Solidity');
+    s = regionprops(leaf_mask, 'MajorAxisLength', 'MinorAxisLength');
 
-    % L5 = [1 4 6 4 1]; 
-    % E5 = [-1 -2 0 2 1];
-    % S5 = [-1 0 2 0 -1];
-    % R5 = [1 -4 6 -4 1];
+    d = zeros(39,1,'single');
 
-    d = zeros(13,1,'single');
+    % HSV = rgb2hsv(im).* single(leaf_mask);
 
-    %area = nnz(gim);
+    % lin = rgb2lin(im);
+    % ycbcrlin = rgb2ycbcr(lin);
 
-    d(1:7) = py_hu_moments(leaf_mask);
+    % gim = rgb2gray(im);
 
-    % extract_edges maybe should return the masks
-    %[strong,weak,~] = extract_edges(HSV(:,:,3));
+    % glcm = normglcm(ycbcrlin(:,:,1), 256, leaf_mask);
 
-    %d(8) = sum(sum(strong)) / sum(sum(weak));
+    %[strong,weak,~] = extract_edges(ycbcrlin(:,:,1));
 
-    d(8) = s.MajorAxisLength;
-    d(9) = s.MinorAxisLength;
-    d(10) = s.Area;
-    d(11) = s.Perimeter;
+    sig_norm_factor = hypot(s.MajorAxisLength*0.5, s.MinorAxisLength*0.5);
+    sig = signature_interp(leaf_mask, 256) ./ sig_norm_factor;
 
-    d(12) = s.Eccentricity;
-    d(13) = s.Solidity;
+    num_bins = 32;
+    bin_edges = linspace(0, 1, num_bins+1);
+    counts = histcounts(sig, bin_edges);
 
-    leaf_area = nnz(leaf_mask);
-    d(8:11) = d(8:11) / sqrt(leaf_area);
+    d(1:32) = counts;
+    d(33:39) = py_hu_moments(leaf_mask);
+
+    % d(8) = s.MajorAxisLength;
+    % d(9) = s.MinorAxisLength;
+    % d(10) = s.Perimeter;
+    % 
+    % d(11) = s.Eccentricity;
+    % d(12) = s.Solidity;
+    % 
+    % d(13) = std(std(glcm));
+    % d(14) = sum(sum(strong)) / sum(sum(weak));
+    % 
+    % leaf_area = nnz(leaf_mask);
+    % im_area = size(im,1) * size(im,2);
+    % d(8:10) = d(8:10) / (leaf_area * im_area);
 end
-

@@ -23,8 +23,6 @@ function K = segment(im, se)
     d(:,:,4) = labim(:,:,3); % b
     d(:,:,5) = sobel + lap; % similar to L
 
-    gabor_sigmas = gabor_sigmas .* 0.8;
-
     gabormag = imgaborfilt(v_gauss, gabor_filters);
     gabormag = arrayfun(@(i) imgaussfilt(gabormag(:,:,i), gabor_sigmas(i)), 1:24, 'UniformOutput', false);
     gabormag = cat(3, gabormag{:});

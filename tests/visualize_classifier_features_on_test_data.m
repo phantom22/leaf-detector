@@ -4,16 +4,18 @@ function visualize_classifier_features_on_test_data
 
     [num_images,paths,~] = image_paths_from_dir(targets);
 
+    [~,min_bounds,~] = load_leaf_classifier;
+
     gt_data = { ...
-        { ...
+        { ... % Z
             {"G","G","G","D","D","D","H","H","H","E","E","E","E","I","I","I","N","N","N","L","L","L","M","M","M","M","F","F","A","A","A","B","B","B","C","C","C"}, ...
             [5 4 5 5 5 5 6 5 7 6 6 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 4 5 5 4 5 5 5 5 5 6] ...
         }, ...
-        { ...
+        { ... % test2/test3
             {"C","C","C","C","C","N","N","N","N","N","N","D","D","D","D","D","L","L","L","L","L","L","G","G","G","G","M","M","M","M","M","M","H","H","H","H","F","F","F","F","F","F","F","H","H","H"}, ...
             [5 5 5 5 5 5 5 5 4 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 4 5 5 5 5 5 5 5] ...
         }, ...
-        { ...
+        { ... % test4
             {"A","A","A","I","I","I","I","B","B","B","B","B","E","E","E","E"}, ...
             [5 5 5 5 5 5 5 5 5 5 5 4 5 5 5 5] ...
         }
@@ -29,6 +31,7 @@ function visualize_classifier_features_on_test_data
     for k=1:num_targets
         image_paths = paths{k};
         image_count = num_images(k);
+        target = targets(k);
 
         % test3
         if k == 2
@@ -38,20 +41,25 @@ function visualize_classifier_features_on_test_data
         gt_labels = gt_data{k}{1};
         % gt_counts = gt_data{k}{2};
 
+        ignore_area = 300*400;
+        target_area = ignore_area*4;
+
         figure_maximized(targets(k));
         [m,n] = calcola_ingombro_minimo_subplot(image_count);
         for i=1:image_count
             expected_label = gt_labels{i};
 
-            im = imresizetoarea(im2double(imread(image_paths{i})), 120000);
+            im = imresizetoarea(im2double(imread(image_paths{i})), target_area, ignore_area);
             mask = segment(im, se);
             % K = regions 
             %  out_data = zeros(16,1,numRegions,'single');
-            [K,out_data] = local_classify(im, mask, dummy_se, mapping(expected_label));
+            [K,out_data] = local_classify(im, mask, dummy_se, mapping(expected_label), min_bounds);
 
             tsubplot(m,n,i); timagesc(K, expected_label);
 
             full_data{end+1} = out_data;
+
+            fprintf("'%s': %d/%d.\n", target, i, image_count);
         end
     end
 
@@ -86,7 +94,7 @@ function visualize_classifier_features_on_test_data
     plot_features(test_X,test_Y,feature_labels,"Test set distribution");
 end
 
-function [K,out_data] = local_classify(I,BW,se,expected_class)
+function [K,out_data] = local_classify(I,BW,se,expected_class,min_bounds)
     I = whitebalance(I);
 
     [labels, numRegions] = bwlabel(BW);
@@ -113,7 +121,7 @@ function [K,out_data] = local_classify(I,BW,se,expected_class)
     end
 
     K = zeros(size(BW),'uint8');
-    out_data = zeros(16,1,numRegions,'single');
+    out_data = zeros(length(min_bounds)+1,1,numRegions,'single');
 
     for i=1:numRegions
         full_mask = labels == idx(i);

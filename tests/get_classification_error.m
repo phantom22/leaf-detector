@@ -5,7 +5,7 @@ function get_classification_error
     acc_sum = 0;
 
     for i=1:num_targets
-        acc_sum = acc_sum + mainall(target(i), false, false);
+        acc_sum = acc_sum + mainall(target(i), false, true);
     end
 
     fprintf("[total] Accuracy: %.2f%%\n", acc_sum / num_targets * 100);

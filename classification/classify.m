@@ -1,4 +1,6 @@
 function [K,counts] = classify(I,BW,se)
+    % I = whitebalance(I);
+
     leaf_classifier = load_leaf_classifier();
     [labels, numRegions] = bwlabel(BW);
 
@@ -30,7 +32,7 @@ function [K,counts] = classify(I,BW,se)
         full_mask = labels == idx(i);
         mask = bwopen(bwclose(full_mask,se),se);
 
-        data = double(region_descriptors(I, mask))';
+        data = region_descriptors(I, mask)';
         ndata = normalize_region_descriptors(data);
 
         [C,~] = leaf_classifier.predict(ndata);
