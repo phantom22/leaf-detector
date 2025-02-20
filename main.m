@@ -1,20 +1,16 @@
 function main
     tic;
 
-    im = imresizetoarea(im2double(imread("images/A/1.jpg")), 300*400);
+    im = im2double(imread("images/test/test_finale.jpg")); % "old/images-old/X/17.jpg"
+    im = whitebalance(im);
 
-    %disp(size(im))
-
-    se = strel('disk', 2);
+    se = strel('disk', 3);
     dummy_se = strel('disk', 0);
 
     tic;
-    K = segment(im, se);
+    K = segment(im,se);
 
-    %disp(hu_moments(K));
-    %disp(feature_vec(K));
-
-    [C,counts] = classify(im, K, dummy_se);
+    [C,~] = classify(im, K, dummy_se);
     toc;
 
     figure_maximized;

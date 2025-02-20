@@ -41,7 +41,8 @@ function get_segmentation_error
             tot_fn = tot_fn + fn;
     
             tsubplot(m,n,i);
-            timagesc(gt - mask, names{k}{i});
+            imagesc_segerror(mask, gt);
+            title(names{k}{i});
 
             curr_im = curr_im + 1;
         end
@@ -49,9 +50,12 @@ function get_segmentation_error
         fprintf("'%s' done (elapsed: %.0fs, ETA: %.0fs).\n", target, round(elapsed), abs(round(elapsed/(curr_im-1)*(tot_num_images - curr_im + 1))));
     end
 
-    toc;
+    acc = (tot_tp+tot_tn) / tot_num_pixels;
+    prec = tot_tp / (tot_tp + tot_fp);
+    rec = tot_tp / (tot_tp + tot_fn);
+    f1 = 2 * prec * rec / (prec + rec);
 
-    acc = (tp+tn) / tot_num_pixels;
+    fprintf("[train set]\n  Accuracy: %.2f%%\n  Precision: %.2f%%\n  Recall: %.2f%%\n  F1-score: %.2f%%\n", acc * 100 , prec * 100, rec * 100, f1 * 100);
+    fprintf("[Conf matrix]\n [%.2f%% %.2f%%\n  %.2f%% %.2f%%]\n", tot_tn/tot_num_pixels*100, tot_fp/tot_num_pixels*100, tot_fn/tot_num_pixels*100, tot_tp/tot_num_pixels*100);
 
-    fprintf("[%s] Accuracy: %.2f%%\n", target, acc * 100);
 end

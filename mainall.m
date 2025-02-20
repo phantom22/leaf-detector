@@ -59,7 +59,7 @@ function acc = mainall(target, just_segmentation, display)
     end
 
     ignore_area = 300*400;
-    target_area = ignore_area*4;
+    target_area = ignore_area*8;
 
     for i=1:num_images
         im = imresizetoarea(im2double(imread(class_full_paths{i})), target_area, ignore_area);

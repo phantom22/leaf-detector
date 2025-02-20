@@ -42,10 +42,10 @@ function visualize_classifier_features_on_test_data
         % gt_counts = gt_data{k}{2};
 
         ignore_area = 300*400;
-        target_area = ignore_area*4;
+        target_area = ignore_area;
 
-        figure_maximized(targets(k));
-        [m,n] = calcola_ingombro_minimo_subplot(image_count);
+        %figure_maximized(targets(k));
+        %[m,n] = calcola_ingombro_minimo_subplot(image_count);
         for i=1:image_count
             expected_label = gt_labels{i};
 
@@ -53,9 +53,9 @@ function visualize_classifier_features_on_test_data
             mask = segment(im, se);
             % K = regions 
             %  out_data = zeros(16,1,numRegions,'single');
-            [K,out_data] = local_classify(im, mask, dummy_se, mapping(expected_label), min_bounds);
+            [~,out_data] = local_classify(im, mask, dummy_se, mapping(expected_label), min_bounds);
 
-            tsubplot(m,n,i); timagesc(K, expected_label);
+            %tsubplot(m,n,i); timagesc(K, expected_label);
 
             full_data{end+1} = out_data;
 

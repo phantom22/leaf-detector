@@ -2,7 +2,7 @@ function sig = signature_interp(bw, res)
     % Calculate the centroid of the boundary
     tmp = regionprops(bw, double(bw), 'Area', 'WeightedCentroid', 'Orientation');
     
-    bd = bwboundaries(bw);
+    bd = bwboundaries(bw, 8, 'noholes');
     b = bd{1};
 
     c = [tmp.WeightedCentroid(2), tmp.WeightedCentroid(1)];
