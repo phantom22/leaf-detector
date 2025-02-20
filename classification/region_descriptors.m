@@ -16,9 +16,9 @@ function d = region_descriptors(im, leaf_mask)
     % s = regionprops(leaf_mask, 'MajorAxisLength', 'MinorAxisLength', ...
     %     'Area', 'Perimeter', 'Eccentricity', 'Solidity');
 
-    s = regionprops(leaf_mask, 'MajorAxisLength', 'MinorAxisLength');
+    s = regionprops(leaf_mask, 'MajorAxisLength', 'MinorAxisLength', 'Eccentricity', 'Solidity', 'Perimeter', 'Area');
 
-    d = zeros(39,1,'single');
+    d = zeros(45,1,'single');
 
     % HSV = rgb2hsv(im).* single(leaf_mask);
 
@@ -31,8 +31,8 @@ function d = region_descriptors(im, leaf_mask)
 
     %[strong,weak,~] = extract_edges(ycbcrlin(:,:,1));
 
-    sig_norm_factor = hypot(s.MajorAxisLength*0.5, s.MinorAxisLength*0.5);
-    sig = signature_interp(leaf_mask, 256) ./ sig_norm_factor;
+    norm_factor = hypot(s.MajorAxisLength*0.5, s.MinorAxisLength*0.5);
+    sig = signature_interp(leaf_mask, 256) ./ norm_factor;
 
     num_bins = 32;
     bin_edges = linspace(0, 1, num_bins+1);
@@ -41,17 +41,13 @@ function d = region_descriptors(im, leaf_mask)
     d(1:32) = counts;
     d(33:39) = py_hu_moments(leaf_mask);
 
-    % d(8) = s.MajorAxisLength;
-    % d(9) = s.MinorAxisLength;
-    % d(10) = s.Perimeter;
-    % 
-    % d(11) = s.Eccentricity;
-    % d(12) = s.Solidity;
-    % 
-    % d(13) = std(std(glcm));
-    % d(14) = sum(sum(strong)) / sum(sum(weak));
-    % 
-    % leaf_area = nnz(leaf_mask);
-    % im_area = size(im,1) * size(im,2);
-    % d(8:10) = d(8:10) / (leaf_area * im_area);
+    d(40) = s.MajorAxisLength;
+    d(41) = s.MinorAxisLength;
+    d(42) = s.Area;
+    d(43) = s.Perimeter;
+
+    d(40:43) = d(40:43) / norm_factor;
+    
+    d(44) = s.Eccentricity;
+    d(45) = s.Solidity;
 end

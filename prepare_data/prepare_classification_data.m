@@ -76,5 +76,5 @@ function [data,min_bounds,max_bounds] = prepare_classification_data(noise_streng
         data(:,1:end-1) = data_without_labels + noise;
     end
 
-    [data,min_bounds,max_bounds] = normalize_region_descriptors(data, true, 33:39);
+    [data,min_bounds,max_bounds] = normalize_region_descriptors(data, true, [33:39, 44:45]); % hu + ecc + sol
 end
