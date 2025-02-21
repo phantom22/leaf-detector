@@ -35,10 +35,7 @@ function [K,counts] = classify(I,BW,se)
         data = region_descriptors(I, mask)';
         ndata = normalize_region_descriptors(data);
 
-        P = cellfun(@(c) c.cluster(ndata), classifiers, 'UniformOutput', false);
-        margins = cellfun(@(c) c.posterior(ndata), classifiers, 'UniformOutput', false);
-
-        %[P, margins] = cellfun(@(c) c.predict(ndata), classifiers, 'UniformOutput', false);
+        [P, margins] = cellfun(@(c) c.predict(ndata), classifiers, 'UniformOutput', false);
 
         P = cell2mat(P);
         margins = soft_max(cell2mat(margins));
