@@ -1,7 +1,7 @@
 function [K,counts] = classify(I,BW,se)
     % I = whitebalance(I);
 
-    leaf_classifier = load_leaf_classifier();
+    classifiers = load_leaf_classifier();
     [labels, numRegions] = bwlabel(BW);
 
     idx = 1:numRegions;
@@ -35,22 +35,28 @@ function [K,counts] = classify(I,BW,se)
         data = region_descriptors(I, mask)';
         ndata = normalize_region_descriptors(data);
 
-        [C,~] = leaf_classifier.predict(ndata);
+        P = cellfun(@(c) c.cluster(ndata), classifiers, 'UniformOutput', false);
+        margins = cellfun(@(c) c.posterior(ndata), classifiers, 'UniformOutput', false);
 
-        % conf = soft_max(margins);
-        % 
-        % no_strong_conf = nnz(conf > 0.1667) == 0; % 2/12
-        % sorted_conf = sort(conf, 'descend');
-        % 
-        % top_diff = sorted_conf(1) - sorted_conf(2);
-        % 
-        % no_strong_lead = top_diff < 0.0207; % 1/(12*4)
-        % 
-        % tie_lead = top_diff < 0.0139; % 1/(12*6)
-        % 
-        % disp([no_strong_lead, no_strong_conf, tie_lead])
-        % 
-        % if no_strong_conf && no_strong_lead || tie_lead % no_strong_conf for [0.0709 0.0834 0.0457 0.0988 0.0890 0.0482 0.0874 0.0823 0.1104 0.0420 0.0857]
+        %[P, margins] = cellfun(@(c) c.predict(ndata), classifiers, 'UniformOutput', false);
+
+        P = cell2mat(P);
+        margins = soft_max(cell2mat(margins));
+
+        cidx = find(P);
+
+        if isscalar(cidx)
+            C = cidx(1)
+            conf = margins(cidx, 2)
+        else
+            [conf, C] = max(margins(:,2))
+        end
+
+        if conf < 0.6
+            C = 13;
+        end
+
+        % if C == 0
         %     C = 13;
         % end
 

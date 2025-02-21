@@ -18,7 +18,7 @@ function d = region_descriptors(im, leaf_mask)
 
     s = regionprops(leaf_mask, 'MajorAxisLength', 'MinorAxisLength', 'Eccentricity', 'Solidity', 'Perimeter', 'Area', 'Circularity');
 
-    d = zeros(46,1,'single');
+    d = zeros(44,1,'single');
 
     % HSV = rgb2hsv(im).* single(leaf_mask);
 
@@ -40,18 +40,21 @@ function d = region_descriptors(im, leaf_mask)
 
     d(1:31) = counts;
 
-    d(32:38) = py_hu_moments(leaf_mask);
+    moments = py_hu_moments(leaf_mask);
 
-    d(39) = s.MajorAxisLength;
-    d(40) = s.MinorAxisLength;
-    d(41) = s.Area;
-    d(42) = s.Perimeter;
+    d(32:35) = moments(1:4);
+    d(36) = moments(6);
 
-    d(39:42) = d(39:42) / norm_factor;
+    d(37) = s.MajorAxisLength;
+    d(38) = s.MinorAxisLength;
+    d(39) = s.Area;
+    d(40) = s.Perimeter;
+
+    d(37:40) = d(37:40) / norm_factor;
     
-    d(43) = s.Eccentricity;
-    d(44) = s.Solidity;
-    d(45) = s.Circularity;
+    d(41) = s.Eccentricity;
+    d(42) = s.Solidity;
+    d(43) = s.Circularity;
 
-    d(46) = std(counts);
+    d(44) = std(counts);
 end
