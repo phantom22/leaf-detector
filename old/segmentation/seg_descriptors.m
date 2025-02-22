@@ -5,7 +5,7 @@ function out = seg_descriptors(im, num_superpixels, compactness)
 
     [SP,N_SP] = superpixels(im, num_superpixels, ...
                      'Method', 'slic', ...
-                     'Compactness', compactness);
+                     'Compactness', 25);
 
     rprops = regionprops(SP, 'BoundingBox');
 

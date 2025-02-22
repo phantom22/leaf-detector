@@ -28,7 +28,7 @@ function out = test_extract_bin_descriptors(im, num_superpixels, num_bins)
     %sim = hsvim(:,:,2);
     gim = hsvim(:,:,3);
 
-    descriptors = zeros(N_SP, 11, 'single');
+    descriptors = zeros(N_SP, 10, 'single');
 
     for k = 1:N_SP
         ry = iY{k};
@@ -36,20 +36,19 @@ function out = test_extract_bin_descriptors(im, num_superpixels, num_bins)
         cmask = SP(ry, rx) == k; % cropped mask
         npixels = nnz(cmask);
 
-        [ev,var,std,first,third,rel,unif,entr] = binfeatures(normbins(gim(ry,rx), num_bins, cmask));
+        [ev,var,std,first,~,rel,unif,entr] = binfeatures(normbins(gim(ry,rx), num_bins, cmask));
 
         descriptors(k,1:3) = sum(sum( im(ry,rx) .* cmask )) / npixels;
         descriptors(k,4) = ev;
         descriptors(k,5) = var;
         descriptors(k,6) = std;
         descriptors(k,7) = first;
-        descriptors(k,8) = third;
-        descriptors(k,9) = rel;
-        descriptors(k,10) = unif;
-        descriptors(k,11) = entr;
+        descriptors(k,8) = rel;
+        descriptors(k,9) = unif;
+        descriptors(k,10) = entr;
     end
 
-    descriptors(:,1:11) = normalize(descriptors(:,1:11), 'norm');
+    descriptors(:,1:10) = normalize(descriptors(:,1:10), 'norm');
 
     out.descriptors = descriptors;
     out.superpixels = SP;

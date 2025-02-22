@@ -1,7 +1,7 @@
 function get_all_data()
     %train_acc = get_classification_error * 100;
 
-    scales = 4;
+    scales = [1 4 8];
     num_scales = length(scales);
 
     targets = ["images/Z", "images/test2", "images/test3", "images/test4"];
@@ -34,13 +34,14 @@ function get_all_data()
     tot_acc = tot_tp / sum([tot_tp tot_fp tot_fn]);
     prec = tot_tp / (tot_tp + tot_fp);
     rec = tot_tp / (tot_tp + tot_fn);
+    f1 = 2*prec*rec/(prec + rec);
 
     weighted_pct = sum(weights .* test_precision, 2);
     uniform_pct = sum(test_precision, 2) / num_targets;
 
-    fprintf("accuracy: %.2f%", weighted_pct)
+    fprintf("Accuracy: %.2f%%\nPrecision: %.2f%%\nRecall: %.2f%%\nF1-score: %.2f%%\n", tot_acc, prec, rec, f1);
 
-    T = table("4x", test_precision(:,1,1), test_precision(:,2,1), test_precision(:,3,1), test_precision(:,4,1), uniform_pct, weighted_pct,...
+    T = table(["1x"; "4x"; "8x"], test_precision(:,1,1), test_precision(:,2,1), test_precision(:,3,1), test_precision(:,4,1), uniform_pct, weighted_pct,...
         'VariableNames', {'Scale','images/Z','images/test2','images/test3','images/test4','uniform %','weighted %'});
 
     disp(T);

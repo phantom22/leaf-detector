@@ -1,6 +1,6 @@
 function non_bg = regGrow_batch(input_dir)
     arguments
-        input_dir = "images/D";
+        input_dir = "images/C";
     end
     close all;
 
@@ -30,7 +30,7 @@ function non_bg = regGrow_batch(input_dir)
         fname = fnames{k};
 
         subplot('Position',ax_positions(:,k));
-        timagesc(non_bg(:,:,k), fname);
+        timshow(1-non_bg(:,:,k), fname);
     end
 
     figure_maximized("'",input_dir,"' original");

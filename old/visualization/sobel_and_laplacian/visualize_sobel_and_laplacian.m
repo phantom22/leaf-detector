@@ -1,7 +1,7 @@
 function visualize_sobel_and_laplacian
     close all;
 
-    im = imread('images/D/11.jpg');
+    im = imread('images/A/1.jpg');
     %t = medfilt3(im,[5 5 1]);
 
     %noshadowim = im ./ imgaussfilt(rgb2gray(im),gaussiansigma(50),"Padding","symmetric");
@@ -23,33 +23,10 @@ function visualize_sobel_and_laplacian
     num_descriptors = size(descriptors, 2);
 
     figure_maximized;
-    for d=1:num_descriptors
+    for d=1:num_descriptors-2
         vals = descriptors(:,d);
 
-        tsubplot(3, 2, d);
+        tsubplot(2, 2, d);
         timagesc(vals(SP), descriptor_labels{d});
     end
-
-    bdmask = boundarymask(desc.superpixels);
-    overlaycol = 'red';
-
-    figure_maximized;
-
-    tsubplot(3, 2, 1);
-    timagesc(imoverlay(sob_g,bdmask,overlaycol), descriptor_labels{1});
-
-    tsubplot(3, 2, 2);
-    timagesc(imoverlay(sob_m,bdmask,overlaycol), descriptor_labels{2});
-
-    tsubplot(3, 2, 3);
-    timagesc(imoverlay(lap_g,bdmask,overlaycol), descriptor_labels{3});
-
-    tsubplot(3, 2, 4);
-    timagesc(imoverlay(lap_m,bdmask,overlaycol), descriptor_labels{4});
-
-    tsubplot(3, 2, 5);
-    timagesc(imoverlay(canny_m,bdmask,overlaycol), descriptor_labels{5});
-
-    tsubplot(3, 2, 6);
-    timagesc(imoverlay(sob_d,bdmask,overlaycol), descriptor_labels{6});
 end

@@ -18,9 +18,11 @@ function mask_averages = get_superpixel_dirtiness(target,display)
         % convert BW grayscale image to BW rgb image
         im = im2single(imread(og_full_paths{k}));
         gt_rgb = repmat(im2double(imread(gt_full_paths{k})), [1 1 3]);
-    
+
+        tic;
         desc = gt_descriptors_without_gt_mask(im, gt_rgb);
-    
+        toc;
+
         ma = desc.mask_avg;
         ma_dirty = ma(ma ~= 0.0 & ma ~= 1.0); % all entries that are not either 100% leaf or 100% bg
         ma_deltas = [ma_dirty(ma_dirty <= 0.5); 1 - ma_dirty(ma_dirty > 0.5)];

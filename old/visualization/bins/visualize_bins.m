@@ -17,8 +17,8 @@ function visualize_bins
     descriptor_labels = {
         'R'; 'G'; 'B';
         'Expected value';'Variance'; 'Std';
-        'First moment';'Third moment';
-        'Relative variance';'Uniformity';'Entropy';
+        'First moment';'Relative variance';'Uniformity';
+        'Entropy';
     };
 
     num_descriptors = size(descriptors, 2);
@@ -27,7 +27,11 @@ function visualize_bins
     for d=1:num_descriptors
         vals = descriptors(:,d);
 
-        tsubplot(4, 3, d);
+        tidx = d;
+        if tidx == 10
+            tidx = tidx + 1;
+        end
+        tsubplot(4, 3, tidx);
         timagesc(vals(SP), descriptor_labels{d});
     end
 end

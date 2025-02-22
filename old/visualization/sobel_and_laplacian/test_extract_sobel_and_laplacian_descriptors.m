@@ -12,7 +12,7 @@ function [out,sob_g,sob_m,lap_g,lap_m,canny_m,sob_d] = test_extract_sobel_and_la
 
     [SP,N_SP] = superpixels(im, num_superpixels, ...
                      'Method', 'slic', ...
-                     'Compactness', 18);
+                     'Compactness', 25);
 
     rprops = regionprops(SP, 'BoundingBox');
 

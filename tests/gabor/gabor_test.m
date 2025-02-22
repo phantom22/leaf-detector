@@ -1,26 +1,11 @@
-function createGaborFeatures(im)
+function createGaborFeatures
+    K = 3;
+    orientation = 0:45:315;
+    omega = 4/sqrt(2);
+    wavelength = [1 2] * omega;
 
-    if size(im,3) == 3
-        im = rgb2lab(im);
-    end
-    
-    im = im2single(im);
-    
-    % imageSize = size(im);
-    % numRows = imageSize(1);
-    % numCols = imageSize(2);
-    % 
-    % wavelengthMin = 4/sqrt(2);
-    % wavelengthMax = hypot(numRows,numCols);
-    % n = floor(log2(wavelengthMax/wavelengthMin));
-    % wavelength = 2.^(0:(n-2)) * wavelengthMin;
-    % 
-    % deltaTheta = 45;
-    % orientation = 0:deltaTheta:(180-deltaTheta);
-    % 
-    % g = gabor(wavelength,orientation);
-
-    load('segmentation/gabordata.mat','gabor_filters', 'gabor_sigmas');
+    g = gabor(wavelength,orientation);
+    sigmas = wavelength * K / 2;
     
     gabormag = imgaborfilt(im(:,:,3), gabor_filters);
 
@@ -44,7 +29,7 @@ im = imresize(im, [300 400]);
 
 disp(size(im));
 
-createGaborFeatures(im);
+createGaborFeatures;
 
 figure_maximized;
 timshow(im);

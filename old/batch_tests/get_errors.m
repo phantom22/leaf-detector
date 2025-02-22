@@ -86,13 +86,14 @@ function get_errors(class_folders, morphology, display, save)
             ground_truth = imread(gt_path) > 1; % 1 perché con zero crea artefatti.
             ground_truth_nnz(pos) = nnz(ground_truth);
             
-            labels = segment(im, num_superpixels);
+            labels = seg_descriptors(im, num_superpixels);
             
             % cleanup dei label
             if do_morphology
                 labels = imerode(labels,see);
                 labels = imdilate(labels,sed);
                 [regioni,~] = bwlabel(labels);
+                imshow(regioni)
                 areas = regionprops(regioni, "Area");
                 areas = [areas.Area];
                 [~,inx] = max(areas);

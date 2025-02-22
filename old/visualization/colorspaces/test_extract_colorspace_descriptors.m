@@ -27,12 +27,10 @@ function out = test_extract_colorspace_descriptors(im, num_superpixels, compactn
     hsvim = rgb2hsv(im);
     ycbcrim = rgb2ycbcr(im);
     labim = rgb2lab(im);
-    xyzim = rgb2lab(im);
-    ntscim = rgb2ntsc(im);
     linim = rgb2lin(im);
     gim = rgb2gray(im);
 
-    descriptors = zeros(N_SP, 7, 'single');
+    descriptors = zeros(N_SP, 13, 'single');
 
     for k = 1:N_SP
         ry = iY{k};
@@ -40,16 +38,13 @@ function out = test_extract_colorspace_descriptors(im, num_superpixels, compactn
         cmask = SP(ry, rx) == k; % cropped mask
         mass = nnz(cmask);
 
-        descriptors(k,1:3) = sum(sum( im(ry,rx) .* cmask )) / mass;
-        descriptors(k,4:6) = sum(sum( hsvim(ry,rx) .* cmask )) / mass;
-        descriptors(k,7:9) = sum(sum( ycbcrim(ry,rx) .* cmask )) / mass;
-        descriptors(k,10:12) = sum(sum( labim(ry,rx) .* cmask )) / mass;
-        descriptors(k,13:15) = sum(sum( xyzim(ry,rx) .* cmask )) / mass;
-        descriptors(k,16:18) = sum(sum( ntscim(ry,rx) .* cmask )) / mass;
-        descriptors(k,19:21) = sum(sum( linim(ry,rx) .* cmask )) / mass;
-        descriptors(k,22) = sum(sum( gim(ry,rx) .* cmask )) / mass;
+        descriptors(k,1:3) = sum(sum( hsvim(ry,rx) .* cmask )) / mass;
+        descriptors(k,4:6) = sum(sum( ycbcrim(ry,rx) .* cmask )) / mass;
+        descriptors(k,7:9) = sum(sum( labim(ry,rx) .* cmask )) / mass;
+        descriptors(k,10:12) = sum(sum( linim(ry,rx) .* cmask )) / mass;
+        descriptors(k,13) = sum(sum( gim(ry,rx) .* cmask )) / mass;
     end
-    descriptors(:,1:22) = normalize(descriptors(:,1:22),'norm');
+    descriptors(:,1:13) = normalize(descriptors(:,1:13),'norm');
 
     out.descriptors = descriptors;
     out.superpixels = SP;
