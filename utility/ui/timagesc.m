@@ -4,7 +4,7 @@ function h = timagesc(im, title_txt)
         title_txt {mustBeTextScalar} = "";
     end
     h = imagesc(im);
-    colormap(turbo);
+    colormap(gca, turbo);
     axis image;
     axis off;
     if title_txt ~= ""

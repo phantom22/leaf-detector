@@ -3,6 +3,10 @@ function K = segment(im, se)
         im = im2single(im);
     end
 
+    % im = whitebalance(im);
+    % K = reshape(load_pixel_classifier().predictFcn(pixel_descriptors(im)), size(im,1), size(im,2));
+    % K = bwopen(bwclose(K, se), se);
+
     load('segmentation/gabordata.mat','gabor_filters','gabor_sigmas');
 
     width = size(im,2);
@@ -39,7 +43,7 @@ function K = segment(im, se)
     % d(:,:,7) = gabormag(:,:,2)+gabormag(:,:,6)+gabormag(:,:,10)+gabormag(:,:,14)+gabormag(:,:,18)+gabormag(:,:,22)+gabormag(:,:,26)+gabormag(:,:,30);
     % d(:,:,8) = gabormag(:,:,3)+gabormag(:,:,7)+gabormag(:,:,11)+gabormag(:,:,15)+gabormag(:,:,19)+gabormag(:,:,23)+gabormag(:,:,27)+gabormag(:,:,31);
     % d(:,:,9) = gabormag(:,:,4)+gabormag(:,:,8)+gabormag(:,:,12)+gabormag(:,:,16)+gabormag(:,:,20)+gabormag(:,:,24)+gabormag(:,:,28)+gabormag(:,:,32);
-    
+
     K = imsegkmeans(d, 2, "NumAttempts", 10) - 1;
     if nnz(K(1,:)) > 0.5 * width
         K = 1 - K;

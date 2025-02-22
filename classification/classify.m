@@ -32,21 +32,33 @@ function [K,counts] = classify(I,BW,se)
         full_mask = labels == idx(i);
         mask = bwopen(bwclose(full_mask,se),se);
 
-        data = region_descriptors(I, mask)';
-        ndata = normalize_region_descriptors(data);
+        [data,corrected_mask] = region_descriptors(I, mask);
+        ndata = normalize_region_descriptors(data');
 
         [P, margins] = cellfun(@(c) c.predict(ndata), classifiers, 'UniformOutput', false);
 
         P = cell2mat(P);
-        margins = soft_max(cell2mat(margins));
+        tmp = cell2mat(margins);
+        margins = soft_max(tmp);
+
+        % P = P(2:end-1);
+        % margins = margins(2:end-1,:);
 
         cidx = find(P);
 
         if isscalar(cidx)
-            C = cidx(1)
-            conf = margins(cidx, 2)
+            C = cidx(1);
+            conf = margins(cidx, 2);
         else
-            [conf, C] = max(margins(:,2))
+            [conf, C] = max(margins(:,2));
+            smargins = sort(margins(:,2),'descend');
+            first = smargins(1);
+            second = smargins(2);
+
+            if  (first ~= 1.0 || second == 1.0) && first - second < 0.005
+                C = 13;
+                conf = 1.0;
+            end
         end
 
         if conf < 0.6
@@ -57,7 +69,7 @@ function [K,counts] = classify(I,BW,se)
         %     C = 13;
         % end
 
-        CMASK = full_mask * C;
+        CMASK = corrected_mask * C;
 
         %figure_maximized; timagesc(CMASK, classes(C)); colorbar;
 

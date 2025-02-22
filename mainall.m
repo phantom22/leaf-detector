@@ -1,4 +1,4 @@
-function acc = mainall(target, scale, just_segmentation, display)
+function [acc,tot_tp,tot_fp,tot_fn] = mainall(target, scale, just_segmentation, display)
     arguments
         target = "images/test3";
         scale = 1;
@@ -7,7 +7,7 @@ function acc = mainall(target, scale, just_segmentation, display)
     end
     %close all;
 
-    option_mapping = containers.Map(["images/Z","images/test3","images/test2","images/test4","images/A","images/B","images/C","images/D","images/E","images/F","images/G","images/H","images/I","images/L","images/M","images/N"], [1 2 2 3 4 4 4 4 4 4 4 4 4 4 4 4]);
+    option_mapping = containers.Map(["images/Z","images/test3","images/test2","images/test4","images/A","images/B","images/C","images/D","images/E","images/F","images/G","images/H","images/I","images/L","images/M","images/N", "images/Unknown"], [1 2 2 3 4 5 5 5 5 5 5 5 5 5 5 5 5]);
 
     option = option_mapping(target);
 
@@ -23,12 +23,16 @@ function acc = mainall(target, scale, just_segmentation, display)
         { ... % test4
             {"A","A","A","I","I","I","I","B","B","B","B","B","E","E","E","E"}, ...
             [5 5 5 5 5 5 5 5 5 5 5 4 5 5 5 5] ...
+        }, ... % Unknown
+        { ...
+            {"Unknown","Unknown","Unknown","Unknown","Unknown","Unknown","Unknown","Unknown","Unknown","Unknown","Unknown","Unknown","Unknown","Unknown","Unknown","Unknown","Unknown","Unknown","Unknown","Unknown","Unknown","Unknown","Unknown","Unknown","Unknown","Unknown","Unknown","Unknown","Unknown","Unknown","Unknown","Unknown","Unknown","Unknown","Unknown","Unknown","Unknown","Unknown","Unknown","Unknown","Unknown"}, ...
+            [2 3 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 3 4 2 4 4 1 4 3 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1] ...
         } ...
     };
 
-    [num_images, class_full_paths, ~] = image_paths_from_dir(target);
+    [num_images, class_full_paths, names] = image_paths_from_dir(target);
 
-    if option == 4
+    if option == 5
         splits = strsplit(target, '/');
         class_label = string(splits{end});
         gt_labels = repmat(class_label, 1, num_images);
@@ -62,6 +66,10 @@ function acc = mainall(target, scale, just_segmentation, display)
     ignore_area = 300*400;
     target_area = ignore_area*scale;
 
+    tot_tp = 0;
+    tot_fn = 0;
+    tot_fp = 0;
+
     for i=1:num_images
         im = imresizetoarea(im2double(imread(class_full_paths{i})), target_area, ignore_area);
 
@@ -75,6 +83,26 @@ function acc = mainall(target, scale, just_segmentation, display)
             [classificato,counts] = classify(im, mask, dummy_se);
             class_label = gt_labels{i};
             expected_class = mapping(class_label);
+
+            expected_count = gt_count(i);
+
+            others = true(13,1);
+            others(expected_class) = 0;
+
+            tp = counts(expected_class);
+            fn = sum(counts(others));
+            
+            if (tp > expected_count)
+                fp = tp - expected_count;
+                tp = expected_count;
+            else
+                fp = 0;
+            end
+
+            tot_tp = tot_tp + tp;
+            tot_fn = tot_fn + fn;
+            tot_fp = tot_fp + fp;
+
             correct_guesses = correct_guesses + counts(expected_class);
     
             if display
@@ -85,7 +113,7 @@ function acc = mainall(target, scale, just_segmentation, display)
         end
 
         if display
-            title(gt_labels{i});
+            title(names{i});
         end
 
         fprintf("'%s': %d/%d.\n", target, i, num_images);

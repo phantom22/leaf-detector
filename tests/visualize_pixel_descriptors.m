@@ -13,7 +13,7 @@ function visualize_pixel_descriptors(im_path)
     figure_maximized;
     for i=1:num_features
         tsubplot(m,n,i);
-        imagesc(im_C(:,:,i));
+        timagesc(im_C(:,:,i));
         axis image;
         axis off;
         colorbar;

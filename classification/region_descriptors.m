@@ -1,4 +1,4 @@
-function d = region_descriptors(im, leaf_mask)
+function [d,leaf_mask] = region_descriptors(im, leaf_mask)
     if ~isa(im, 'single')
         im = im2single(im);
     end
@@ -20,27 +20,16 @@ function d = region_descriptors(im, leaf_mask)
 
     d = zeros(44,1,'single');
 
-    % HSV = rgb2hsv(im).* single(leaf_mask);
-
-    % lin = rgb2lin(im);
-    % ycbcrlin = rgb2ycbcr(lin);
-
-    % gim = rgb2gray(im);
-
-    % glcm = normglcm(ycbcrlin(:,:,1), 256, leaf_mask);
-
-    %[strong,weak,~] = extract_edges(ycbcrlin(:,:,1));
-
     norm_factor = hypot(s.MajorAxisLength*0.5, s.MinorAxisLength*0.5);
-    sig = signature_interp(leaf_mask, 256) ./ norm_factor;
+    sig = signature_interp(leaf_mask, 31) ./ norm_factor;
 
     num_bins = 31;
     bin_edges = linspace(1/32, 1, num_bins+1);
     counts = histcounts(sig, bin_edges);
 
-    d(1:31) = counts;
-
     moments = py_hu_moments(leaf_mask);
+
+    d(1:31) = counts;
 
     d(32:35) = moments(1:4);
     d(36) = moments(6);
@@ -51,7 +40,7 @@ function d = region_descriptors(im, leaf_mask)
     d(40) = s.Perimeter;
 
     d(37:40) = d(37:40) / norm_factor;
-    
+
     d(41) = s.Eccentricity;
     d(42) = s.Solidity;
     d(43) = s.Circularity;

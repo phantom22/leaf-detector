@@ -11,10 +11,10 @@ function [data,min_bounds,max_bounds] = prepare_classification_data(noise_streng
     
     % ["images\A", "images\B", ...]
     input_dirs = strcat('images\', class_folders);
-    gt_dirs = strcat('images\ground_truth\', class_folders);
+    % gt_dirs = strcat('images\ground_truth\', class_folders);
     
     [class_num_images, class_full_paths, ~] = image_paths_from_dir(input_dirs);
-    [~, gt_full_paths, ~] = image_paths_from_dir(gt_dirs);
+    %[~, ~, ~] = image_paths_from_dir(gt_dirs);
     
     tot_num_images = sum(class_num_images);
 
@@ -49,8 +49,6 @@ function [data,min_bounds,max_bounds] = prepare_classification_data(noise_streng
                 K = (labeledImage == maxIndex);
             end
 
-            %im = whitebalance(im);
-
             if pos == 1
                 v = region_descriptors(im, K);
                 num_features = size(v, 1);
@@ -76,5 +74,5 @@ function [data,min_bounds,max_bounds] = prepare_classification_data(noise_streng
         data(:,1:end-1) = data_without_labels + noise;
     end
 
-    [data,min_bounds,max_bounds] = normalize_region_descriptors(data, true, [32:38, 43:45]); % hu + ecc + sol
+    [data,min_bounds,max_bounds] = normalize_region_descriptors(data, true, [32:36, 41:43]); % hu + ecc + sol
 end

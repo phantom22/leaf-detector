@@ -1,1 +1,1 @@
-models/segmentation/wb-360gabor-10_pct_noise_9f-sat-cr-pixel-classifier.mat
+models/segmentation/7f-wb-10%_noise-pixel-classifier.mat

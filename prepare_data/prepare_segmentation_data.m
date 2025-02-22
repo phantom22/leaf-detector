@@ -18,7 +18,7 @@ function data = prepare_segmentation_data(noise_strength)
     
     total_image_count = sum(gt_file_count);
     
-    udata = zeros(total_image_count, 300 * 400, 11, 'single'); % 22 % 28
+    udata = zeros(total_image_count, 300 * 400, 8, 'single'); % 22 % 28
     
     i = 1;
     tic;
@@ -35,7 +35,7 @@ function data = prepare_segmentation_data(noise_strength)
             im = whitebalance(im);
         
             desc = pixel_descriptors(im); % NUM_PIXELSxNUM_F
-            desc(:,11) = gt(:);
+            desc(:,8) = gt(:);
     
             udata(i,:,:) = desc(:,:);
     
@@ -46,7 +46,7 @@ function data = prepare_segmentation_data(noise_strength)
         fprintf("'%s' done (elapsed: %.0fs, ETA: %.0fs).\n", targets(t), round(elapsed), abs(round(elapsed/(i-1)*(total_image_count - i + 1))));
     end
     
-    data = reshape(udata, [], 11);
+    data = reshape(udata, [], 8);
 
     if noise_strength ~= 0
         data_without_labels = data(:,1:end-1);
