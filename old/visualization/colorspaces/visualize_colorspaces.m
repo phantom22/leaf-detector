@@ -1,7 +1,7 @@
 function visualize_colorspaces
     close all;
 
-    im = imread('images/A/1.jpg');
+    im = imread('images/N/1.jpg');
 
     desc = test_extract_colorspace_descriptors(im, 4800, 25);
     descriptors = desc.descriptors;
@@ -32,6 +32,9 @@ function visualize_colorspaces
         end
 
         tsubplot(rows, cols, tidx);
-        timagesc(vals(SP), descriptor_labels{d});
+        imagesc(vals(SP));
+        title(descriptor_labels{d});
+        axis image;
+        axis off;
     end
 end

@@ -38,11 +38,11 @@ function out = test_extract_colorspace_descriptors(im, num_superpixels, compactn
         cmask = SP(ry, rx) == k; % cropped mask
         mass = nnz(cmask);
 
-        descriptors(k,1:3) = sum(sum( hsvim(ry,rx) .* cmask )) / mass;
-        descriptors(k,4:6) = sum(sum( ycbcrim(ry,rx) .* cmask )) / mass;
-        descriptors(k,7:9) = sum(sum( labim(ry,rx) .* cmask )) / mass;
-        descriptors(k,10:12) = sum(sum( linim(ry,rx) .* cmask )) / mass;
-        descriptors(k,13) = sum(sum( gim(ry,rx) .* cmask )) / mass;
+        descriptors(k,1:3) = sum(sum( hsvim(ry,rx,:) .* cmask )) / mass;
+        descriptors(k,4:6) = sum(sum( ycbcrim(ry,rx,:) .* cmask )) / mass;
+        descriptors(k,7:9) = sum(sum( labim(ry,rx,:) .* cmask )) / mass;
+        descriptors(k,10:12) = sum(sum( linim(ry,rx,:) .* cmask )) / mass;
+        descriptors(k,13) = sum(sum( gim(ry,rx,:) .* cmask )) / mass;
     end
     descriptors(:,1:13) = normalize(descriptors(:,1:13),'norm');
 

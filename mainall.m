@@ -1,7 +1,7 @@
 function [acc,tot_tp,tot_fp,tot_fn] = mainall(target, scale, just_segmentation, display)
     arguments
         target = "images/test3";
-        scale = 1;
+        scale = 4;
         just_segmentation = false;
         display = true;
     end
